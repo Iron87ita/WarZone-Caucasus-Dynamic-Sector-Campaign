@@ -6,7 +6,7 @@ Created by **Iron87Ita**
 
 ## Current Version
 
-**WarZone Caucasus MODERN V4.55**
+**WarZone Caucasus MODERN V4.46**
 
 ## Overview
 
