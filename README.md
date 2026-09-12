@@ -147,7 +147,7 @@ When updating to a newer compatible version, keep your existing persistence file
 
 ## Current Mission File
 
-`WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_55.miz`
+`WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_46_Iron87Ita.miz`
 
 ## Credits
 
