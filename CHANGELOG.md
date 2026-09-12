@@ -1,4 +1,7 @@
-HOTFIX V4.46 – AI GROUND COUNTERATTACK & SHOP PERSISTENCE
+
+# WarZone Caucasus – Changelog
+
+## HOTFIX V4.46 – AI GROUND COUNTERATTACK & SHOP PERSISTENCE
 
 * Fixed AI ground forces failing to continue offensive operations after the first campaign sectors.
 * Reworked ground target selection to use the full sector connection network instead of the old limited progression chain.
@@ -33,7 +36,6 @@ IMPORTANT:
 The persistence filename has intentionally not been changed in order to preserve compatibility with existing campaign progress.
 
 
-# WarZone Caucasus – Changelog
 
 ## V4.55
 
