@@ -6,7 +6,7 @@ Created by **Iron87Ita**
 
 ## Current Version
 
-**WarZone Caucasus MODERN V4.46**
+**WarZone Caucasus MODERN V4.47**
 
 ## Overview
 
@@ -147,7 +147,7 @@ When updating to a newer compatible version, keep your existing persistence file
 
 ## Current Mission File
 
-`WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_46_Iron87Ita.miz`
+`WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_47_Iron87Ita.miz`
 
 ## Credits
 
