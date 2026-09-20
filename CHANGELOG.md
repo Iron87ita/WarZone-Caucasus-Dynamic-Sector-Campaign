@@ -1,5 +1,108 @@
-
 # WarZone Caucasus – Changelog
+
+# WarZone Caucasus v4.47
+
+## Persistence & Dynamic Warfare Update
+
+Version **4.47** focuses on improving campaign persistence and the reliability of dynamically deployed forces during long-running multiplayer campaigns.
+
+### Fixed – Player Shop Unit Persistence
+
+Units purchased and deployed through the player shop are now correctly included in the campaign persistence system.
+
+Previously, shop units were spawned dynamically and existed normally during the mission, but they were not part of the standard ZoneCommander persistence data. As a result, purchased units disappeared after a mission or server restart.
+
+This has now been corrected.
+
+Purchased ground assets will now:
+
+* Remain deployed after mission/server restart
+* Restore their saved position and heading
+* Preserve surviving units within partially damaged groups
+* Be permanently removed from persistence when destroyed
+* Continue operating normally after the campaign is reloaded
+
+### MQ-9 / JTAC Persistence
+
+MQ-9 Reaper / JTAC assets purchased through the shop are now also tracked by the persistence system.
+
+Their deployment information is saved separately and reconstructed when the campaign is loaded again.
+
+### Safe Integration with ZoneCommander
+
+Shop persistence has been implemented using a dedicated persistence layer.
+
+Purchased units are **not added to `ZoneCommander.built` or `remainingUnits`**.
+
+This prevents interference with:
+
+* Zone defense respawn
+* Sector garrisons
+* Ground dispatchers
+* AI counterattack logic
+* Zone capture mechanics
+* Standard ZoneCommander unit restoration
+
+The original WarZone respawn system therefore remains unchanged.
+
+### Destroyed Unit Handling
+
+Destroyed purchased units are automatically removed from the saved state.
+
+This prevents destroyed shop assets from incorrectly returning after a server restart.
+
+Multiple combat losses occurring within a short period are grouped into a single persistence update to avoid unnecessary save operations.
+
+### Temporary Delivery Aircraft
+
+Temporary aircraft used to deliver purchased forces are intentionally excluded from persistence.
+
+Only the actual deployed combat/support assets are saved.
+
+### Compatibility
+
+Existing campaign save files remain compatible.
+
+No campaign reset is required when upgrading to **v4.47**.
+
+If no shop-unit persistence information exists in an older save file, WarZone simply starts with an empty purchased-unit registry while keeping the rest of the campaign state intact.
+
+---
+
+## Technical Improvements
+
+* Added dedicated `shopSpawnedUnits` persistence state
+* Added dynamic ground-group registration
+* Added surviving-unit snapshots for purchased groups
+* Added saved position and heading restoration
+* Added coalition/country restoration
+* Added MQ-9/JTAC persistence support
+* Added automatic persistence updates after purchased-unit losses
+* Added safe restoration after ZoneCommander initialization
+* Prevented shop assets from entering standard zone respawn tables
+* Preserved existing campaign persistence format and progression
+
+---
+
+## Recommended Server Update Procedure
+
+1. Stop the current WarZone mission.
+2. Replace the previous `.miz` with **WarZone Caucasus v4.47**.
+3. Keep the existing WarZone persistence file.
+4. Start the new mission.
+5. Continue the campaign normally.
+
+No campaign restart is required.
+
+---
+
+### WarZone Caucasus Dynamic Campaign
+
+**Created by IRON87ITA**
+
+Thank you to everyone testing the mission and reporting issues.
+
+Your feedback continues to help improve WarZone and make the persistent campaign more reliable with every release.
 
 ## HOTFIX V4.46 – AI GROUND COUNTERATTACK & SHOP PERSISTENCE
 
