@@ -1,158 +1,90 @@
-# WARZONE CAUCASUS – DYNAMIC SECTOR CAMPAIGN
+# WarZone Caucasus – Dynamic Sector Campaign
 
-Dynamic persistent PvE campaign for **DCS World – Caucasus**.
+**Version 4.47 · DCS World · Caucasus · Dynamic PvE / PvPvE campaign**
 
-Created by **Iron87Ita**
+WarZone Caucasus is a persistent multiplayer campaign by **IRON87ITA**, built around progressive sector warfare. The operational front expands as sectors are captured, creating a focused battlefield while avoiding unnecessary AI activity across the entire map.
 
-## Current Version
+## Highlights
 
-**WarZone Caucasus MODERN V4.47**
+- Fourteen strategic sectors
+- Independent NATO and RED campaign paths
+- Persistent campaign progression
+- Dynamic sector activation
+- Player-scaled enemy air forces
+- CAP, BARCAP, CAS, SEAD and strike missions
+- Dynamic AI commander and F10 commander menu
+- Player shop and support-purchasing system
+- Persistent purchased ground units and MQ-9/JTAC assets
+- Friendly-zone and map-marker deployment
+- Forward helicopter operations, FARPs and FOB support
+- Tanker, AWACS, JTAC and GCI support
+- Integrated briefing and kneeboard
+- Single-player and multiplayer compatible
 
-## Overview
+## Campaign structure
 
-WarZone Caucasus is a dynamic PvE campaign built around a progressive sector-based battlefield.
+### NATO progression
 
-The campaign evolves according to territorial captures. Enemy sectors are activated progressively instead of running the entire battlefield simultaneously, helping create a more focused operational front while reducing unnecessary AI activity.
+```text
+3 → 2 → 1 → 6 → 7 → 8 → 9 → 10
+```
 
-The mission is designed for both single-player and multiplayer environments.
+### RED progression
 
-## Main Features
+```text
+3 → 4 → 5 → 11 → 12 → 13 → 14
+```
 
-* Dynamic progressive sector campaign
-* 14 strategic sectors
-* NATO and RED independent campaign paths
-* Persistent campaign progression
-* Automatic persistence recovery
-* Dynamic sector activation
-* Player-scaled enemy air forces
-* Dynamic CAP / BARCAP missions
-* CAS missions
-* SEAD missions
-* STRIKE missions
-* JTAC support
-* MQ-9 Reaper support
-* Dynamic AI Commander
-* F10 Commander menu
-* AI support purchasing system
-* Friendly-zone and map-marker deployment
-* Forward helicopter operations
-* FARPs / FOB support
-* AWACS support
-* Tanker support
-* TAF / GCI system
-* Integrated mission briefing
-* Integrated kneeboard
+Only the current front and previously unlocked sectors remain active. The campaign covers the Northern Caucasus, Mozdok, Krasnodar, the Black Sea coast, Georgia and Abkhazia.
 
-## Campaign Structure
+## Dynamic operations
 
-### NATO Campaign
+Players can launch or support multiple mission types through the campaign systems:
 
-Sector progression:
+- Combat Air Patrol and BARCAP
+- Close Air Support
+- Suppression of Enemy Air Defences
+- Strike missions
+- Dynamic counterattacks
+- Ground-force purchases and deployment
+- MQ-9 / JTAC support
+- Tanker and AWACS operations
 
-`3 → 2 → 1 → 6 → 7 → 8 → 9 → 10`
-
-### RED Campaign
-
-Sector progression:
-
-`3 → 4 → 5 → 11 → 12 → 13 → 14`
-
-Only the current operational front and previously unlocked sectors remain active.
-
-This prevents the entire Caucasus battlefield from being active simultaneously and allows the conflict to progressively expand across the region.
-
-## Strategic Areas
-
-The campaign covers several operational areas including:
-
-* Northern Caucasus
-* Mozdok region
-* Krasnodar region
-* Black Sea coast
-* Georgia
-* Abkhazia
+Enemy air activity scales with the number of active players, while ground forces and major objectives retain their intended operational strength.
 
 ## Persistence
 
-Campaign progress is automatically saved.
+Campaign progress is saved between mission and server restarts. Version 4.47 adds a dedicated persistence layer for assets purchased through the player shop.
 
-The persistence system includes self-healing logic designed to prevent the campaign from becoming stuck after a valid sector capture.
+Purchased units now retain:
 
-Existing persistence files from previous compatible versions can continue to be used.
+- Surviving members of partially damaged groups
+- Saved position and heading
+- Coalition and country information
+- MQ-9 / JTAC deployment state
+- Permanent removal after destruction
 
-## Multiplayer Scaling
+Shop units remain separate from the standard ZoneCommander respawn tables, preserving zone defence, capture, counterattack and garrison behaviour.
 
-Enemy air activity scales according to the number of active players.
+Existing compatible save files can continue to be used when upgrading to v4.47.
 
-Example:
+## Installation and update
 
-* 1 player → 1 primary bandit
-* Additional players → proportional enemy increase
-* Designed for small multiplayer groups
+1. Download the `.miz` file from the [latest GitHub release](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/latest).
+2. Stop the current WarZone mission or dedicated server.
+3. Replace the previous mission with the new `.miz` file.
+4. Keep the existing compatible persistence file.
+5. Start the mission and continue the campaign.
 
-Ground forces and major campaign objectives retain their intended operational strength.
+No campaign reset is required when upgrading from a compatible version.
 
-## F10 Commander
+## Community
 
-The F10 menu allows players to interact with the WarZone Commander system and request operational support.
+- YouTube: [@Iron87Ita](https://www.youtube.com/@Iron87Ita)
+- Discord: `iron87`
 
-Available systems may include:
+Feedback and campaign reports are welcome through [GitHub Issues](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/issues).
 
-* AI air support
-* Ground support
-* CAS
-* SEAD
-* CAP
-* BARCAP
-* STRIKE
-* JTAC
-* Drone support
-* Deployment to friendly sectors
-* Deployment using map markers
+## Disclaimer
 
-## Helicopter Operations
-
-Forward helicopter operations are supported through FARPs and FOBs located closer to active sectors.
-
-This reduces transit time for helicopter pilots and makes rotary-wing operations more practical during the progression of the campaign.
-
-## Air Support
-
-WarZone Caucasus includes persistent operational support such as:
-
-* AWACS
-* KC-135 tanker
-* KC-135 MPRS tanker
-* JTAC
-* MQ-9 Reaper
-* AI combat support
-
-## Installation
-
-Download the latest `.miz` file from the **Releases** section.
-
-Copy it to:
-
-`Saved Games\DCS\Missions\`
-
-Then launch DCS World and select:
-
-`MISSION → MY MISSIONS`
-
-The mission can also be installed on a DCS Dedicated Server.
-
-## Updating
-
-When updating to a newer compatible version, keep your existing persistence files unless the release notes specifically require a campaign reset.
-
-## Current Mission File
-
-`WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_47_Iron87Ita.miz`
-
-## Credits
-
-Campaign design, scripting and development:
-
-**Iron87Ita**
-
-Built for the DCS World community.
+This is an unofficial community mission for DCS World. DCS and related product names are trademarks of Eagle Dynamics SA. This project is not affiliated with or endorsed by Eagle Dynamics.
