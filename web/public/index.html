@@ -27,42 +27,73 @@
       <article><span>VERSION</span><strong id="version">—</strong></article>
     </section>
 
-    <section class="grid two">
-      <article class="panel campaign">
-        <div class="panel-title"><h2>Campaign Front</h2><span>14 sectors</span></div>
-        <div class="paths">
-          <div><label>NATO PATH</label><div class="path">3 → 2 → 1 → 6 → 7 → 8 → 9 → 10</div></div>
-          <div><label>RED PATH</label><div class="path red">3 → 4 → 5 → 11 → 12 → 13 → 14</div></div>
-        </div>
-        <div id="sectorGrid" class="sector-grid"></div>
+    <section class="grid map-layout">
+      <article class="panel map-panel">
+        <div class="panel-title"><h2>Live Operational Map</h2><span id="mapMeta">DCS trigger-zone topology</span></div>
+        <div class="legend"><i class="blue"></i>NATO <i class="red"></i>RED <i class="neutral"></i>Neutral <i class="front"></i>Frontline</div>
+        <svg id="operationalMap" class="operational-map" viewBox="0 0 1000 620" role="img" aria-label="WarZone operational sector map"></svg>
       </article>
 
-      <article class="panel situation">
-        <div class="panel-title"><h2>Sector Situation</h2><span id="sectorLabel">Current front</span></div>
-        <div class="balance">
-          <div class="side blue"><small>NATO</small><strong id="blueProgress">0%</strong></div>
-          <div class="bar"><i id="blueBar"></i><b id="redBar"></b></div>
-          <div class="side red"><small>RED</small><strong id="redProgress">0%</strong></div>
-        </div>
-        <div class="credits">
-          <div><span>NATO CREDITS</span><strong id="blueCredits">—</strong></div>
-          <div><span>RED CREDITS</span><strong id="redCredits">—</strong></div>
-        </div>
+      <aside class="stack">
+        <article class="panel situation">
+          <div class="panel-title"><h2>Campaign Situation</h2><span id="sectorCount">—</span></div>
+          <div class="control-grid">
+            <div><span>NATO CONTROL</span><strong id="blueControl">0</strong></div>
+            <div><span>RED CONTROL</span><strong id="redControl">0</strong></div>
+            <div><span>NEUTRAL</span><strong id="neutralControl">0</strong></div>
+            <div><span>FRONTLINE</span><strong id="frontCount">0</strong></div>
+          </div>
+          <div class="credits">
+            <div><span>NATO ACCOUNT</span><strong id="blueCredits">—</strong><small id="blueWallets"></small></div>
+            <div><span>RED ACCOUNT</span><strong id="redCredits">—</strong></div>
+          </div>
+        </article>
+
+        <article class="panel sector-detail">
+          <div class="panel-title"><h2>Sector Detail</h2><span>click map / sector</span></div>
+          <h3 id="detailName">Select a sector</h3>
+          <dl>
+            <div><dt>Owner</dt><dd id="detailOwner">—</dd></div>
+            <div><dt>Status</dt><dd id="detailStatus">—</dd></div>
+            <div><dt>Level</dt><dd id="detailLevel">—</dd></div>
+            <div><dt>Income</dt><dd id="detailIncome">—</dd></div>
+          </dl>
+        </article>
+      </aside>
+    </section>
+
+    <section class="panel campaign">
+      <div class="panel-title"><h2>Campaign Sectors</h2><span>live ownership</span></div>
+      <div class="paths">
+        <div><label>NATO PATH</label><div class="path">3 → 2 → 1 → 6 → 7 → 8 → 9 → 10</div></div>
+        <div><label>RED PATH</label><div class="path red">3 → 4 → 5 → 11 → 12 → 13 → 14</div></div>
+      </div>
+      <div id="sectorGrid" class="sector-grid"></div>
+    </section>
+
+    <section class="grid two lower">
+      <article class="panel">
+        <div class="panel-title"><h2>Active Operations</h2><span>WarZone GroupCommander</span></div>
+        <div id="operations" class="list"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-title"><h2>WarZone Live</h2><span>campaign events</span></div>
+        <div id="events" class="list"></div>
       </article>
     </section>
 
     <section class="grid two lower">
       <article class="panel">
-        <div class="panel-title"><h2>Active Operations</h2><span>live tasking</span></div>
-        <div id="operations" class="list"></div>
+        <div class="panel-title"><h2>Online Pilots</h2><span>public roster</span></div>
+        <div id="pilotList" class="list"></div>
       </article>
-      <article class="panel">
-        <div class="panel-title"><h2>WarZone Live</h2><span>event feed</span></div>
-        <div id="events" class="list"></div>
+      <article class="panel architecture">
+        <div class="panel-title"><h2>Telemetry</h2><span>public strategic feed</span></div>
+        <p>Sector ownership, topology, economy, operations and player roster are exported by the DCS mission every two seconds. Tactical enemy coordinates are intentionally excluded.</p>
       </article>
     </section>
 
-    <footer>WARZONE CAUCASUS · DYNAMIC PVE / PVPVE · COMMAND CENTER MVP</footer>
+    <footer>WARZONE CAUCASUS · DYNAMIC PVE / PVPVE · LIVE COMMAND CENTER</footer>
   </main>
   <script src="/app.js"></script>
 </body>
