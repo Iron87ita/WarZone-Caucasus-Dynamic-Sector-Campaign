@@ -2,20 +2,20 @@
 
 Live strategic dashboard for **WarZone Caucasus Dynamic Sector Campaign v4.47**.
 
-The dashboard reads the campaign directly from the real `BattleCommander` / `ZoneCommander` runtime state. It does not require sector names to be hardcoded: sectors, ownership, front lines, trigger-zone coordinates and campaign connections are discovered automatically while DCS is running.
+The dashboard reads the campaign directly from the real WarZone runtime state and aggregates the live `ZoneCommander` data through the campaign's `WZ_SECTOR` definitions. It exports the 14 strategic sectors, campaign progression, coalition state and active operations while DCS is running.
 
 ## Live data exported from DCS
 
 - Server / telemetry state and mission time
 - Players online and aircraft type
-- All WarZone sectors and current ownership
-- Frontline detection using `BattleCommander.connections`
-- Sector level, income and active/destroyed state
-- Trigger-zone center / polygon geometry converted to latitude/longitude
+- All 14 WarZone strategic sectors and current ownership
+- Locked / unlocked / frontline / secured sector state
+- Per-sector component-zone control and geometry
+- Sector level and income
 - NATO / RED coalition accounts
 - NATO personal-wallet aggregate
 - Active `GroupCommander` patrol / attack / supply operations
-- Zone-capture event feed
+- Zone / sector progression event feed
 - Operation launch events
 
 The public feed intentionally does **not** export exact enemy aircraft, SAM or ground-unit positions.
@@ -25,7 +25,7 @@ The public feed intentionally does **not** export exact enemy aircraft, SAM or g
 ```text
 DCS Dedicated Server
   |
-  | WarZoneWebBridge.lua (every 2 s)
+  | WarZoneWebBridge (every 2 s)
   v
 Saved Games\<DCS instance>\WarZoneWeb\WarZoneWebState.json
   |
@@ -39,16 +39,20 @@ Node.js web/server.js
 Browser Command Center
 ```
 
-## 1. Install the Lua bridge in the mission
-
-Add `bridge/WarZoneWebBridge.lua` to the `.miz` and load it **after the WarZone Commander script/classes have been loaded**.
-
-The bridge starts automatically when the file is executed.
-
-WarZone v4.47 already uses persistence, so a server configured for campaign persistence should already have the required `io` / `lfs` mission-scripting access. If `io` or `lfs` are unavailable, the bridge logs:
+For public 24/7 deployment the recommended production path is:
 
 ```text
-[WarZoneWebBridge] io/lfs unavailable - telemetry disabled
+DCS -> JSON -> Node on 127.0.0.1:8787 -> Cloudflare Tunnel -> HTTPS Internet
+```
+
+## 1. Install the Lua bridge in the mission
+
+Load `bridge/WarZoneWebBridge.lua` only after the WarZone campaign runtime has been created (`bc` / `WZ_SECTOR`). The tested WEB LIVE FIX2 mission embeds the bridge in the already-loaded WarZone campaign script so it starts in the correct order.
+
+Successful startup is logged as:
+
+```text
+[WarZoneWebBridge] LIVE telemetry started for WZ_SECTOR v4.47
 ```
 
 Output file:
@@ -57,9 +61,9 @@ Output file:
 Saved Games\<DCS instance>\WarZoneWeb\WarZoneWebState.json
 ```
 
-No modification to `ZoneCommander:capture()` or the WarZone save format is required.
+The DCS mission scripting environment must provide `io` and `lfs` for telemetry / persistence writes.
 
-## 2. Run the web server
+## 2. Run the web server manually
 
 Requires **Node.js 20+**. No npm packages are required.
 
@@ -86,8 +90,14 @@ DCS
 You can always specify the exact file explicitly:
 
 ```powershell
-$env:WARZONE_STATE_FILE="$env:USERPROFILE\Saved Games\DCS.openbeta_server\WarZoneWeb\WarZoneWebState.json"
+$env:WARZONE_STATE_FILE="$env:USERPROFILE\Saved Games\DCS\WarZoneWeb\WarZoneWebState.json"
 node server.js
+```
+
+For a simple Windows one-click launch, double-click:
+
+```text
+AVVIA_WARZONE_WEB.cmd
 ```
 
 ## Environment variables
@@ -98,14 +108,53 @@ node server.js
 | `HOST` | `0.0.0.0` | Bind address |
 | `WARZONE_STATE_FILE` | auto-detect / demo state | Exact DCS telemetry JSON |
 | `WARZONE_STALE_MS` | `15000` | Mark live DCS telemetry offline after this age |
+| `WARZONE_HEALTH_DETAILS` | `0` | Set to `1` only for local debugging to expose the telemetry file path in `/api/health` |
+
+## 3. Install as a Windows 24/7 startup task
+
+Close any manually running `npm start` process, then open **PowerShell as Administrator** in `web` and run:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\windows\Install-WarZoneWebService.ps1
+```
+
+This creates the `WarZone Web Command Center` Scheduled Task, runs it as `SYSTEM`, starts it at Windows boot, binds the site to `127.0.0.1:8787`, and restarts Node if the process exits.
+
+Logs:
+
+```text
+web\logs\warzone-web.log
+web\logs\warzone-web-error.log
+```
+
+Uninstall:
+
+```powershell
+.\windows\Uninstall-WarZoneWebService.ps1
+```
+
+## 4. Publish it to the Internet
+
+See **[PUBLIC_DEPLOYMENT.md](PUBLIC_DEPLOYMENT.md)**.
+
+The recommended public deployment is a named **Cloudflare Tunnel** installed as a Windows service and mapped to:
+
+```text
+http://127.0.0.1:8787
+```
+
+Use a hostname such as:
+
+```text
+https://warzone.example.com
+```
+
+Do **not** port-forward `8787` and do not expose the DCS Saved Games directory or scripting interfaces to the Internet.
 
 ## Operational map
 
-The bridge uses the actual WarZone `CustomZone` data. For each strategic zone it exports the trigger-zone center and, when available, polygon vertices. DCS local coordinates are converted with `coord.LOtoLL()`.
-
-The browser then plots the campaign topology without any external map library. `BattleCommander.connections` are rendered as links between sectors and frontline sectors receive a highlighted ring.
-
-If geographic coordinates are unavailable, the UI automatically falls back to a topology layout.
+The bridge aggregates the actual campaign strategic sector definitions in `WZ_SECTOR`. Each sector can contain multiple component zones; the browser uses their geographic centers / geometry to plot the strategic campaign while keeping tactical enemy-unit positions private.
 
 ## Campaign paths
 
@@ -120,7 +169,3 @@ RED:
 ```text
 3 -> 4 -> 5 -> 11 -> 12 -> 13 -> 14
 ```
-
-## Production publishing
-
-For an Internet-facing server, put the Node process behind a reverse proxy such as Caddy or Nginx and expose only HTTPS (`443`). Do not expose DCS scripting ports or the Saved Games directory to the Internet.
