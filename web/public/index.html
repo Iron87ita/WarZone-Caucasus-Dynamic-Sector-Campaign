@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WarZone Caucasus Command Center</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">IRON87ITA · DCS WORLD</div>
+        <h1>WARZONE CAUCASUS</h1>
+        <p>Dynamic Sector Campaign · Live Command Center</p>
+      </div>
+      <div class="livebox">
+        <span id="statusDot" class="dot"></span>
+        <div><strong id="serverStatus">CONNECTING</strong><small id="updatedAt">waiting for telemetry</small></div>
+      </div>
+    </header>
+
+    <section class="stats">
+      <article><span>ACTIVE FRONT</span><strong id="activeSector">—</strong></article>
+      <article><span>PLAYERS</span><strong id="players">—</strong></article>
+      <article><span>MISSION TIME</span><strong id="missionTime">—</strong></article>
+      <article><span>VERSION</span><strong id="version">—</strong></article>
+    </section>
+
+    <section class="grid two">
+      <article class="panel campaign">
+        <div class="panel-title"><h2>Campaign Front</h2><span>14 sectors</span></div>
+        <div class="paths">
+          <div><label>NATO PATH</label><div class="path">3 → 2 → 1 → 6 → 7 → 8 → 9 → 10</div></div>
+          <div><label>RED PATH</label><div class="path red">3 → 4 → 5 → 11 → 12 → 13 → 14</div></div>
+        </div>
+        <div id="sectorGrid" class="sector-grid"></div>
+      </article>
+
+      <article class="panel situation">
+        <div class="panel-title"><h2>Sector Situation</h2><span id="sectorLabel">Current front</span></div>
+        <div class="balance">
+          <div class="side blue"><small>NATO</small><strong id="blueProgress">0%</strong></div>
+          <div class="bar"><i id="blueBar"></i><b id="redBar"></b></div>
+          <div class="side red"><small>RED</small><strong id="redProgress">0%</strong></div>
+        </div>
+        <div class="credits">
+          <div><span>NATO CREDITS</span><strong id="blueCredits">—</strong></div>
+          <div><span>RED CREDITS</span><strong id="redCredits">—</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid two lower">
+      <article class="panel">
+        <div class="panel-title"><h2>Active Operations</h2><span>live tasking</span></div>
+        <div id="operations" class="list"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-title"><h2>WarZone Live</h2><span>event feed</span></div>
+        <div id="events" class="list"></div>
+      </article>
+    </section>
+
+    <footer>WARZONE CAUCASUS · DYNAMIC PVE / PVPVE · COMMAND CENTER MVP</footer>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
