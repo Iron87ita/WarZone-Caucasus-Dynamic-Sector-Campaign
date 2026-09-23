@@ -16,3 +16,11 @@ services:
       - ./data:/data
     ports:
       - "127.0.0.1:8787:8787"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: warzone-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - warzone-web
