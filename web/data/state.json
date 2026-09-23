@@ -1,0 +1,39 @@
+{
+  "campaign": "WarZone Caucasus",
+  "version": "4.47",
+  "status": "ONLINE",
+  "updatedAt": "2026-09-23T13:00:00Z",
+  "playersOnline": 7,
+  "maxPlayers": 32,
+  "missionTime": "02:17:43",
+  "activeSector": 3,
+  "coalitions": {
+    "blue": { "name": "NATO", "credits": 4250 },
+    "red": { "name": "RED", "credits": 3870 }
+  },
+  "sectors": [
+    { "id": 1, "name": "Sector 1", "owner": "neutral", "status": "locked" },
+    { "id": 2, "name": "Sector 2", "owner": "neutral", "status": "locked" },
+    { "id": 3, "name": "Mountain Front", "owner": "contested", "status": "active", "blueProgress": 56, "redProgress": 44 },
+    { "id": 4, "name": "Sector 4", "owner": "neutral", "status": "locked" },
+    { "id": 5, "name": "Sector 5", "owner": "neutral", "status": "locked" },
+    { "id": 6, "name": "Sector 6", "owner": "neutral", "status": "locked" },
+    { "id": 7, "name": "Sector 7", "owner": "neutral", "status": "locked" },
+    { "id": 8, "name": "Sector 8", "owner": "neutral", "status": "locked" },
+    { "id": 9, "name": "Sector 9", "owner": "neutral", "status": "locked" },
+    { "id": 10, "name": "Sector 10", "owner": "neutral", "status": "locked" },
+    { "id": 11, "name": "Sector 11", "owner": "neutral", "status": "locked" },
+    { "id": 12, "name": "Sector 12", "owner": "neutral", "status": "locked" },
+    { "id": 13, "name": "Sector 13", "owner": "neutral", "status": "locked" },
+    { "id": 14, "name": "Sector 14", "owner": "neutral", "status": "locked" }
+  ],
+  "operations": [
+    { "id": "CAP-021", "type": "CAP", "sector": 3, "status": "ACTIVE", "title": "Combat Air Patrol" },
+    { "id": "SEAD-014", "type": "SEAD", "sector": 3, "status": "AVAILABLE", "title": "Suppress enemy air defences" }
+  ],
+  "events": [
+    { "time": "15:52", "side": "blue", "text": "NATO captured KAZBEGI WEST" },
+    { "time": "15:46", "side": "neutral", "text": "CAP-021 launched in Sector 3" },
+    { "time": "15:39", "side": "red", "text": "RED reinforced TYRNYAUZ EAST" }
+  ]
+}
