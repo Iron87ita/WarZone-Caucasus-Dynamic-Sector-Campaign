@@ -1,5 +1,5 @@
 -- WarZone Caucasus -> Web Command Center bridge
--- Auto-discovers live WarZone state from BattleCommander / ZoneCommander.
+-- v4.47 live adapter for the real WZ_SECTOR + BattleCommander runtime.
 -- Public telemetry only: no enemy aircraft, SAM or ground-unit coordinates.
 
 WarZoneWebBridge = WarZoneWebBridge or {}
@@ -9,7 +9,7 @@ WarZoneWebBridge.interval = WarZoneWebBridge.interval or 2
 WarZoneWebBridge.maxPlayers = WarZoneWebBridge.maxPlayers or 32
 WarZoneWebBridge.maxEvents = WarZoneWebBridge.maxEvents or 40
 WarZoneWebBridge.events = WarZoneWebBridge.events or {}
-WarZoneWebBridge.previousOwners = WarZoneWebBridge.previousOwners or {}
+WarZoneWebBridge.previousSectors = WarZoneWebBridge.previousSectors or {}
 WarZoneWebBridge.previousOperations = WarZoneWebBridge.previousOperations or {}
 
 local function isArray(t)
@@ -72,6 +72,12 @@ local function sideKey(side)
     return "neutral"
 end
 
+local function sideName(side)
+    if side == 2 then return "NATO" end
+    if side == 1 then return "RED" end
+    return "NEUTRAL"
+end
+
 local function hhmmss(seconds)
     seconds = math.max(0, math.floor(tonumber(seconds) or 0))
     local h = math.floor(seconds / 3600)
@@ -132,41 +138,16 @@ local function zoneGeometry(zoneName)
     return geometry
 end
 
-local function sectorId(zone, index)
-    if tonumber(zone.sectorId) then return tonumber(zone.sectorId) end
-    if tonumber(zone.id) then return tonumber(zone.id) end
-    local name = tostring(zone.zone or zone.name or "")
-    local n = name:match("[Ss][Ee][Cc][Tt][Oo][Rr][%s_%-#]*(%d+)")
-    return tonumber(n) or index
-end
-
 local function getBattleCommander()
+    if type(_G) == "table" and type(_G.bc) == "table" and type(_G.bc.zones) == "table" then
+        return _G.bc
+    end
+    if type(bc) == "table" and type(bc.zones) == "table" then return bc end
     if BattleCommander and BattleCommander.zones and BattleCommander.zones[1] then
         local instance = BattleCommander.zones[1].battleCommander
         if instance and type(instance) == "table" then return instance end
     end
     return BattleCommander
-end
-
-local function buildZoneIndex(bc)
-    local byName = {}
-    for i, zone in ipairs((bc and bc.zones) or {}) do
-        byName[zone.zone] = { zone = zone, id = sectorId(zone, i), index = i }
-    end
-    return byName
-end
-
-local function isFrontline(zone, bc, byName)
-    if not zone.active then return false end
-    for _, c in ipairs((bc and bc.connections) or {}) do
-        local otherName = nil
-        if c.from == zone.zone then otherName = c.to elseif c.to == zone.zone then otherName = c.from end
-        local other = otherName and byName[otherName] and byName[otherName].zone
-        if other and other.active and (other.side == 0 or zone.side == 0 or other.side ~= zone.side) then
-            return true
-        end
-    end
-    return false
 end
 
 local function collectPlayers()
@@ -196,21 +177,31 @@ local function collectPlayers()
     return players
 end
 
-local function collectOperations(bc, byName)
+local function sectorIndexForZone(zoneName)
+    if WZ_SECTOR and WZ_SECTOR.getSectorIndex then
+        local ok, idx = pcall(WZ_SECTOR.getSectorIndex, WZ_SECTOR, zoneName)
+        if ok then return idx end
+    end
+    return nil
+end
+
+local function collectOperations(bcObj)
     local operations, current = {}, {}
     local activeStates = { preparing=true, takeoff=true, inair=true, landed=true, enroute=true, atdestination=true }
-    for _, zone in ipairs((bc and bc.zones) or {}) do
+    for _, zone in ipairs((bcObj and bcObj.zones) or {}) do
         for _, g in ipairs(zone.groups or {}) do
             if activeStates[g.state] then
-                local target = byName[g.targetzone]
+                local targetSector = sectorIndexForZone(g.targetzone)
+                local sourceSector = sectorIndexForZone(zone.zone)
                 local op = {
                     id = tostring(g.name or (g.mission or "OP")),
                     type = string.upper(tostring(g.mission or "operation")),
                     side = sideKey(g.side),
                     status = string.upper(tostring(g.state or "active")),
                     source = zone.zone,
+                    sourceSector = sourceSector,
                     target = g.targetzone,
-                    sector = target and target.id or sectorId(zone, 0),
+                    sector = targetSector or sourceSector,
                     platform = g.type or "unknown",
                     title = string.format("%s → %s", tostring(zone.zone or "?"), tostring(g.targetzone or "?"))
                 }
@@ -225,56 +216,132 @@ local function collectOperations(bc, byName)
         end
     end
     WarZoneWebBridge.previousOperations = current
+    table.sort(operations, function(a,b) return tostring(a.id) < tostring(b.id) end)
     return operations
 end
 
-local function collectConnections(bc, byName)
-    local result = {}
-    for _, c in ipairs((bc and bc.connections) or {}) do
-        local a, b = byName[c.from], byName[c.to]
-        if a and b then
-            result[#result + 1] = { from = a.id, to = b.id, fromName = c.from, toName = c.to }
+local function collectSectorConnections()
+    local result, seen = {}, {}
+    if WZ_SECTOR and type(WZ_SECTOR.nextFor) == "table" then
+        for side, branch in pairs(WZ_SECTOR.nextFor) do
+            for fromIdx, toIdx in pairs(branch or {}) do
+                local a, b = tonumber(fromIdx), tonumber(toIdx)
+                if a and b then
+                    local lo, hi = math.min(a,b), math.max(a,b)
+                    local key = tostring(lo) .. ":" .. tostring(hi)
+                    if not seen[key] then
+                        seen[key] = true
+                        result[#result + 1] = { from = a, to = b, side = sideKey(tonumber(side)) }
+                    end
+                end
+            end
         end
     end
+    table.sort(result, function(a,b)
+        if a.from == b.from then return a.to < b.to end
+        return a.from < b.from
+    end)
     return result
 end
 
-local function collectSectors(bc, byName)
-    local sectors = {}
-    local firstFront = nil
-    for i, zone in ipairs((bc and bc.zones) or {}) do
-        local id = sectorId(zone, i)
-        local owner = sideKey(zone.side)
-        local frontline = isFrontline(zone, bc, byName)
-        local status = not zone.active and "destroyed" or (frontline and "frontline" or (owner == "neutral" and "neutral" or "controlled"))
-        local sector = {
-            id = id,
-            name = zone.zone or ("Sector " .. id),
-            owner = owner,
-            status = status,
-            active = zone.active == true,
-            frontline = frontline,
-            level = tableCount(zone.built),
-            income = tonumber(zone.income) or 0,
-            geometry = zoneGeometry(zone.zone)
-        }
-        sectors[#sectors + 1] = sector
-        if frontline and not firstFront then firstFront = id end
-
-        local oldOwner = WarZoneWebBridge.previousOwners[zone.zone]
-        if oldOwner and oldOwner ~= owner then
-            local who = owner == "blue" and "NATO" or (owner == "red" and "RED" or "NEUTRAL")
-            WarZoneWebBridge.pushEvent(owner, who .. " now controls " .. tostring(zone.zone), "capture")
+local function aggregateSectorGeometry(definition, bcObj)
+    local zoneEntries = {}
+    local latSum, lonSum, centerCount = 0, 0, 0
+    for _, zoneName in ipairs(definition.zones or {}) do
+        local zc = bcObj and bcObj.getZoneByName and bcObj:getZoneByName(zoneName) or nil
+        local geo = zoneGeometry(zoneName)
+        if geo and geo.center then
+            latSum = latSum + geo.center.lat
+            lonSum = lonSum + geo.center.lon
+            centerCount = centerCount + 1
         end
-        WarZoneWebBridge.previousOwners[zone.zone] = owner
+        zoneEntries[#zoneEntries + 1] = {
+            name = zoneName,
+            owner = sideKey(zc and zc.side or 0),
+            active = zc and zc.active == true or false,
+            level = zc and tableCount(zc.built) or 0,
+            income = zc and (tonumber(zc.income) or 0) or 0,
+            geometry = geo
+        }
     end
-    table.sort(sectors, function(a, b) return (tonumber(a.id) or 0) < (tonumber(b.id) or 0) end)
-    return sectors, firstFront
+    return {
+        type = "sector",
+        center = centerCount > 0 and { lat = latSum / centerCount, lon = lonSum / centerCount } or nil,
+        zones = zoneEntries
+    }, zoneEntries
 end
 
-local function walletSummary(bc)
+local function collectSectors(bcObj)
+    local sectors, frontIds = {}, {}
+    if not WZ_SECTOR or type(WZ_SECTOR.definitions) ~= "table" then return sectors, nil end
+
+    for idx, definition in ipairs(WZ_SECTOR.definitions) do
+        local unlocked = WZ_SECTOR.unlocked and WZ_SECTOR.unlocked[idx] == true or false
+        local completedBy = tonumber(WZ_SECTOR.completedBy and WZ_SECTOR.completedBy[idx]) or 0
+        local liveOwner = 0
+        if WZ_SECTOR.sectorOwner then
+            local ok, owner = pcall(WZ_SECTOR.sectorOwner, WZ_SECTOR, idx)
+            if ok then liveOwner = tonumber(owner) or 0 end
+        end
+
+        local geometry, zoneEntries = aggregateSectorGeometry(definition, bcObj)
+        local blueZones, redZones, neutralZones, level, income = 0, 0, 0, 0, 0
+        for _, z in ipairs(zoneEntries) do
+            if z.owner == "blue" then blueZones = blueZones + 1
+            elseif z.owner == "red" then redZones = redZones + 1
+            else neutralZones = neutralZones + 1 end
+            level = level + (tonumber(z.level) or 0)
+            income = income + (tonumber(z.income) or 0)
+        end
+
+        local owner = "neutral"
+        if unlocked then owner = sideKey(liveOwner) end
+        if not unlocked then owner = "neutral" end
+
+        local secured = unlocked and completedBy ~= 0 and liveOwner == completedBy
+        local frontline = unlocked and not secured
+        local status = not unlocked and "locked" or (secured and "secured" or "frontline")
+        if frontline then frontIds[#frontIds + 1] = idx end
+
+        local totalZones = math.max(1, #zoneEntries)
+        local sector = {
+            id = idx,
+            name = definition.name or ("Sector " .. idx),
+            owner = owner,
+            status = status,
+            unlocked = unlocked,
+            frontline = frontline,
+            completedBy = sideKey(completedBy),
+            level = level,
+            income = income,
+            blueProgress = math.floor((blueZones / totalZones) * 100 + 0.5),
+            redProgress = math.floor((redZones / totalZones) * 100 + 0.5),
+            neutralProgress = math.floor((neutralZones / totalZones) * 100 + 0.5),
+            geometry = geometry
+        }
+        sectors[#sectors + 1] = sector
+
+        local old = WarZoneWebBridge.previousSectors[idx]
+        if old then
+            if old.unlocked ~= unlocked and unlocked then
+                WarZoneWebBridge.pushEvent("neutral", "Sector " .. idx .. " unlocked: " .. tostring(definition.name), "sector")
+            end
+            if old.completedBy ~= completedBy and completedBy ~= 0 then
+                WarZoneWebBridge.pushEvent(sideKey(completedBy), sideName(completedBy) .. " secured Sector " .. idx .. ": " .. tostring(definition.name), "capture")
+            elseif old.owner ~= owner and owner ~= "neutral" and frontline then
+                WarZoneWebBridge.pushEvent(owner, sideName(liveOwner) .. " controls all objectives in Sector " .. idx, "capture")
+            end
+        end
+        WarZoneWebBridge.previousSectors[idx] = { unlocked=unlocked, completedBy=completedBy, owner=owner }
+    end
+
+    local activeSector = (#frontIds == 1) and frontIds[1] or nil
+    return sectors, activeSector
+end
+
+local function walletSummary(bcObj)
     local total, count = 0, 0
-    for _, amount in pairs((bc and bc.playerWallets) or {}) do
+    for _, amount in pairs((bcObj and bcObj.playerWallets) or {}) do
         total = total + (tonumber(amount) or 0)
         count = count + 1
     end
@@ -282,18 +349,17 @@ local function walletSummary(bc)
 end
 
 function WarZoneWebBridge.collect()
-    local bc = getBattleCommander()
-    local byName = buildZoneIndex(bc)
-    local sectors, activeSector = collectSectors(bc, byName)
+    local bcObj = getBattleCommander()
+    local sectors, activeSector = collectSectors(bcObj)
     local players = collectPlayers()
-    local walletTotal, walletCount = walletSummary(bc)
-    local blueCredits = bc and bc.accounts and tonumber(bc.accounts[2]) or 0
-    local redCredits = bc and bc.accounts and tonumber(bc.accounts[1]) or 0
+    local walletTotal, walletCount = walletSummary(bcObj)
+    local blueCredits = bcObj and bcObj.accounts and tonumber(bcObj.accounts[2]) or 0
+    local redCredits = bcObj and bcObj.accounts and tonumber(bcObj.accounts[1]) or 0
 
     return {
         campaign = "WarZone Caucasus",
         version = WarZoneWebBridge.version,
-        status = (#sectors > 0) and "ONLINE" or "STARTING",
+        status = (#sectors == 14) and "ONLINE" or ((#sectors > 0) and "STARTING" or "WAITING"),
         updatedAt = utcNow(),
         missionSeconds = timer and timer.getTime and timer.getTime() or 0,
         missionTime = hhmmss(timer and timer.getTime and timer.getTime() or 0),
@@ -302,33 +368,51 @@ function WarZoneWebBridge.collect()
         players = players,
         activeSector = activeSector,
         coalitions = {
-            blue = { name = "NATO", credits = blueCredits, walletTotal = walletTotal, walletCount = walletCount },
+            blue = { name = "NATO", credits = blueCredits },
             red = { name = "RED", credits = redCredits }
         },
+        playerWallets = { total = walletTotal, count = walletCount },
         sectors = sectors,
-        connections = collectConnections(bc, byName),
-        operations = collectOperations(bc, byName),
+        connections = collectSectorConnections(),
+        operations = collectOperations(bcObj),
         events = WarZoneWebBridge.events
     }
 end
 
 function WarZoneWebBridge.writeSnapshot(snapshot)
     if not io or not lfs then
-        env.info("[WarZoneWebBridge] io/lfs unavailable - telemetry disabled")
+        if env and env.info then env.info("[WarZoneWebBridge] io/lfs unavailable - telemetry disabled") end
         return false
     end
 
     local base = lfs.writedir() .. "WarZoneWeb\\"
     pcall(lfs.mkdir, base)
     local dst = base .. WarZoneWebBridge.outputFile
-    local file, err = io.open(dst, "w")
+    local tmp = dst .. ".tmp"
+    local file, err = io.open(tmp, "w")
     if not file then
-        env.info("[WarZoneWebBridge] cannot open state file: " .. tostring(err))
+        if env and env.info then env.info("[WarZoneWebBridge] cannot open temp state file: " .. tostring(err)) end
         return false
     end
     file:write(jsonEncode(snapshot))
     file:flush()
     file:close()
+
+    if os and os.remove and os.rename then
+        pcall(os.remove, dst)
+        local ok, renameErr = os.rename(tmp, dst)
+        if ok then return true end
+        if env and env.info then env.info("[WarZoneWebBridge] atomic rename unavailable: " .. tostring(renameErr)) end
+    end
+
+    local fallback, fallbackErr = io.open(dst, "w")
+    if not fallback then
+        if env and env.info then env.info("[WarZoneWebBridge] state publish failed: " .. tostring(fallbackErr)) end
+        return false
+    end
+    fallback:write(jsonEncode(snapshot))
+    fallback:close()
+    if os and os.remove then pcall(os.remove, tmp) end
     return true
 end
 
@@ -344,7 +428,7 @@ function WarZoneWebBridge.start()
     if WarZoneWebBridge.started then return end
     WarZoneWebBridge.started = true
     timer.scheduleFunction(WarZoneWebBridge.tick, nil, timer.getTime() + 2)
-    if env and env.info then env.info("[WarZoneWebBridge] LIVE telemetry started") end
+    if env and env.info then env.info("[WarZoneWebBridge] LIVE telemetry started for WZ_SECTOR v4.47") end
 end
 
 WarZoneWebBridge.start()
