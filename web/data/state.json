@@ -1,0 +1,47 @@
+{
+  "campaign": "WarZone Caucasus",
+  "version": "4.47",
+  "status": "ONLINE",
+  "updatedAt": "2026-09-23T13:00:00Z",
+  "playersOnline": 3,
+  "maxPlayers": 32,
+  "missionTime": "02:17:43",
+  "activeSector": 3,
+  "coalitions": {
+    "blue": { "name": "NATO", "credits": 4250, "walletTotal": 780, "walletCount": 3 },
+    "red": { "name": "RED", "credits": 3870 }
+  },
+  "players": [
+    { "name": "IRON87ITA", "side": "blue", "aircraft": "F-16C_50" },
+    { "name": "VIPER 2-1", "side": "blue", "aircraft": "FA-18C_hornet" },
+    { "name": "FULCRUM 1-1", "side": "red", "aircraft": "MiG-29S" }
+  ],
+  "sectors": [
+    { "id": 1, "name": "Sector 1", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 },
+    { "id": 2, "name": "Sector 2", "owner": "neutral", "status": "frontline", "active": true, "frontline": true, "level": 0, "income": 0 },
+    { "id": 3, "name": "Sector 3", "owner": "blue", "status": "frontline", "active": true, "frontline": true, "level": 4, "income": 100 },
+    { "id": 4, "name": "Sector 4", "owner": "red", "status": "frontline", "active": true, "frontline": true, "level": 4, "income": 100 },
+    { "id": 5, "name": "Sector 5", "owner": "red", "status": "controlled", "active": true, "frontline": false, "level": 5, "income": 150 },
+    { "id": 6, "name": "Sector 6", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 },
+    { "id": 7, "name": "Sector 7", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 },
+    { "id": 8, "name": "Sector 8", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 },
+    { "id": 9, "name": "Sector 9", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 },
+    { "id": 10, "name": "Sector 10", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 },
+    { "id": 11, "name": "Sector 11", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 },
+    { "id": 12, "name": "Sector 12", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 },
+    { "id": 13, "name": "Sector 13", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 },
+    { "id": 14, "name": "Sector 14", "owner": "neutral", "status": "neutral", "active": true, "frontline": false, "level": 0, "income": 0 }
+  ],
+  "connections": [
+    {"from":3,"to":2},{"from":2,"to":1},{"from":1,"to":6},{"from":6,"to":7},{"from":7,"to":8},{"from":8,"to":9},{"from":9,"to":10},
+    {"from":3,"to":4},{"from":4,"to":5},{"from":5,"to":11},{"from":11,"to":12},{"from":12,"to":13},{"from":13,"to":14}
+  ],
+  "operations": [
+    { "id": "NATO CAP", "type": "PATROL", "side": "blue", "sector": 3, "status": "INAIR", "title": "Sector 3 → Sector 3" },
+    { "id": "RED ATTACK", "type": "ATTACK", "side": "red", "sector": 3, "status": "ENROUTE", "title": "Sector 4 → Sector 3" }
+  ],
+  "events": [
+    { "time": "02:15:12", "side": "blue", "text": "NATO now controls Sector 3" },
+    { "time": "02:16:40", "side": "red", "text": "RED ATTACK launched toward Sector 3" }
+  ]
+}

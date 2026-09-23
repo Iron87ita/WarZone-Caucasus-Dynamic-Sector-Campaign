@@ -1,0 +1,48 @@
+name: Web Command Center
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - '.github/workflows/web-command-center.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'web/**'
+      - '.github/workflows/web-command-center.yml'
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Syntax check
+        run: npm --prefix web run check
+
+      - name: HTTP smoke test
+        shell: bash
+        run: |
+          node web/server.js > /tmp/warzone-web.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+
+          for i in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:8787/api/health > /tmp/health.json; then
+              cat /tmp/health.json
+              curl --fail --silent http://127.0.0.1:8787/api/state > /tmp/state.json
+              node -e "const s=require('/tmp/state.json'); if(!s.campaign || !Array.isArray(s.sectors)) process.exit(1); console.log(s.campaign, s.sectors.length + ' sectors')"
+              exit 0
+            fi
+            sleep 0.5
+          done
+
+          cat /tmp/warzone-web.log
+          exit 1

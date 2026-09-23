@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WarZone Caucasus Command Center</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">IRON87ITA · DCS WORLD</div>
+        <h1>WARZONE CAUCASUS</h1>
+        <p>Dynamic Sector Campaign · Live Command Center</p>
+      </div>
+      <div class="livebox">
+        <span id="statusDot" class="dot"></span>
+        <div><strong id="serverStatus">CONNECTING</strong><small id="updatedAt">waiting for telemetry</small></div>
+      </div>
+    </header>
+
+    <section class="stats">
+      <article><span>ACTIVE FRONT</span><strong id="activeSector">—</strong></article>
+      <article><span>PLAYERS</span><strong id="players">—</strong></article>
+      <article><span>MISSION TIME</span><strong id="missionTime">—</strong></article>
+      <article><span>VERSION</span><strong id="version">—</strong></article>
+    </section>
+
+    <section class="grid map-layout">
+      <article class="panel map-panel">
+        <div class="panel-title"><h2>Live Operational Map</h2><span id="mapMeta">DCS trigger-zone topology</span></div>
+        <div class="legend"><i class="blue"></i>NATO <i class="red"></i>RED <i class="neutral"></i>Neutral <i class="front"></i>Frontline</div>
+        <svg id="operationalMap" class="operational-map" viewBox="0 0 1000 620" role="img" aria-label="WarZone operational sector map"></svg>
+      </article>
+
+      <aside class="stack">
+        <article class="panel situation">
+          <div class="panel-title"><h2>Campaign Situation</h2><span id="sectorCount">—</span></div>
+          <div class="control-grid">
+            <div><span>NATO CONTROL</span><strong id="blueControl">0</strong></div>
+            <div><span>RED CONTROL</span><strong id="redControl">0</strong></div>
+            <div><span>NEUTRAL</span><strong id="neutralControl">0</strong></div>
+            <div><span>FRONTLINE</span><strong id="frontCount">0</strong></div>
+          </div>
+          <div class="credits">
+            <div><span>NATO ACCOUNT</span><strong id="blueCredits">—</strong><small id="blueWallets"></small></div>
+            <div><span>RED ACCOUNT</span><strong id="redCredits">—</strong></div>
+          </div>
+        </article>
+
+        <article class="panel sector-detail">
+          <div class="panel-title"><h2>Sector Detail</h2><span>click map / sector</span></div>
+          <h3 id="detailName">Select a sector</h3>
+          <dl>
+            <div><dt>Owner</dt><dd id="detailOwner">—</dd></div>
+            <div><dt>Status</dt><dd id="detailStatus">—</dd></div>
+            <div><dt>Level</dt><dd id="detailLevel">—</dd></div>
+            <div><dt>Income</dt><dd id="detailIncome">—</dd></div>
+          </dl>
+        </article>
+      </aside>
+    </section>
+
+    <section class="panel campaign">
+      <div class="panel-title"><h2>Campaign Sectors</h2><span>live ownership</span></div>
+      <div class="paths">
+        <div><label>NATO PATH</label><div class="path">3 → 2 → 1 → 6 → 7 → 8 → 9 → 10</div></div>
+        <div><label>RED PATH</label><div class="path red">3 → 4 → 5 → 11 → 12 → 13 → 14</div></div>
+      </div>
+      <div id="sectorGrid" class="sector-grid"></div>
+    </section>
+
+    <section class="grid two lower">
+      <article class="panel">
+        <div class="panel-title"><h2>Active Operations</h2><span>WarZone GroupCommander</span></div>
+        <div id="operations" class="list"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-title"><h2>WarZone Live</h2><span>campaign events</span></div>
+        <div id="events" class="list"></div>
+      </article>
+    </section>
+
+    <section class="grid two lower">
+      <article class="panel">
+        <div class="panel-title"><h2>Online Pilots</h2><span>public roster</span></div>
+        <div id="pilotList" class="list"></div>
+      </article>
+      <article class="panel architecture">
+        <div class="panel-title"><h2>Telemetry</h2><span>public strategic feed</span></div>
+        <p>Sector ownership, topology, economy, operations and player roster are exported by the DCS mission every two seconds. Tactical enemy coordinates are intentionally excluded.</p>
+      </article>
+    </section>
+
+    <footer>WARZONE CAUCASUS · DYNAMIC PVE / PVPVE · LIVE COMMAND CENTER</footer>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
