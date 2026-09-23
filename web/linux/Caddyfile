@@ -1,0 +1,9 @@
+chimerakites.duckdns.org {
+    encode zstd gzip
+    reverse_proxy warzone-web:8787
+
+    log {
+        output stdout
+        format console
+    }
+}
