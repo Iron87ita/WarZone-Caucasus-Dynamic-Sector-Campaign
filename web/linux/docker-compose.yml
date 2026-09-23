@@ -1,0 +1,18 @@
+services:
+  warzone-web:
+    image: node:22-alpine
+    container_name: warzone-web
+    working_dir: /app
+    command: ["node", "server.js"]
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8787
+      WARZONE_STATE_FILE: /data/WarZoneWebState.json
+      WARZONE_STALE_MS: 15000
+      WARZONE_INGEST_TOKEN: ${WARZONE_INGEST_TOKEN}
+    volumes:
+      - ../:/app:ro
+      - ./data:/data
+    ports:
+      - "127.0.0.1:8787:8787"
