@@ -51,9 +51,19 @@ function readState() {
   }
 }
 
+function commonHeaders() {
+  return {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+  };
+}
+
 function sendJson(res, status, payload) {
   const body = JSON.stringify(payload);
   res.writeHead(status, {
+    ...commonHeaders(),
     'Content-Type': 'application/json; charset=utf-8',
     'Content-Length': Buffer.byteLength(body),
     'Cache-Control': 'no-store'
@@ -74,10 +84,10 @@ function serveStatic(res, pathname) {
   const requested = pathname === '/' ? '/index.html' : pathname;
   const safePath = path.normalize(requested).replace(/^([.][.][/\\])+/, '');
   const filePath = path.join(PUBLIC_DIR, safePath);
-  if (!filePath.startsWith(PUBLIC_DIR)) { res.writeHead(403); return res.end('Forbidden'); }
+  if (!filePath.startsWith(PUBLIC_DIR)) { res.writeHead(403, commonHeaders()); return res.end('Forbidden'); }
   fs.readFile(filePath, (err, data) => {
-    if (err) { res.writeHead(404); return res.end('Not found'); }
-    res.writeHead(200, { 'Content-Type': contentType(filePath), 'Cache-Control': 'no-cache' });
+    if (err) { res.writeHead(404, commonHeaders()); return res.end('Not found'); }
+    res.writeHead(200, { ...commonHeaders(), 'Content-Type': contentType(filePath), 'Cache-Control': 'no-cache' });
     res.end(data);
   });
 }
@@ -104,14 +114,24 @@ setInterval(() => {
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   if (url.pathname === '/api/state') return sendJson(res, 200, readState());
-  if (url.pathname === '/api/health') return sendJson(res, 200, {
-    ok: true, service: 'warzone-command-center', stateFile: STATE_FILE,
-    time: new Date().toISOString()
-  });
+  if (url.pathname === '/api/health') {
+    const state = readState();
+    const health = {
+      ok: true,
+      service: 'warzone-command-center',
+      telemetry: state.status || 'UNKNOWN',
+      telemetryAgeMs: Number.isFinite(state.telemetryAgeMs) ? state.telemetryAgeMs : null,
+      time: new Date().toISOString()
+    };
+    if (process.env.WARZONE_HEALTH_DETAILS === '1') health.stateFile = STATE_FILE;
+    return sendJson(res, 200, health);
+  }
   if (url.pathname === '/events') {
     res.writeHead(200, {
-      'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*'
+      ...commonHeaders(),
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive'
     });
     res.write(`data: ${JSON.stringify(readState())}\n\n`);
     clients.add(res);
