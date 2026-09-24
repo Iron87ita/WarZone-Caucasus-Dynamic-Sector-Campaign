@@ -8,12 +8,12 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: 8787
-      WARZONE_STATE_FILE: /data/WarZoneWebState.json
+      WARZONE_STATE_FILE: /dcs-saved-games/WarZoneWeb/WarZoneWebState.json
+      WARZONE_COMMAND_DIR: /dcs-saved-games/WarZoneWeb/commands
       WARZONE_STALE_MS: 15000
-      WARZONE_INGEST_TOKEN: ${WARZONE_INGEST_TOKEN}
     volumes:
       - ../:/app:ro
-      - ./data:/data
+      - "${DCS_SAVED_GAMES_HOST_PATH}:/dcs-saved-games"
     ports:
       - "127.0.0.1:8787:8787"
 
