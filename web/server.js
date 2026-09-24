@@ -32,11 +32,15 @@ function resolveStateFile() {
 
 let STATE_FILE = resolveStateFile();
 
+function commandDir() {
+  return process.env.WARZONE_COMMAND_DIR || path.join(path.dirname(STATE_FILE), 'commands');
+}
+
 function offlineState(message) {
   return {
     campaign: 'WarZone Caucasus', version: '4.47', status: 'OFFLINE',
     updatedAt: new Date().toISOString(), playersOnline: 0, maxPlayers: 32,
-    activeSector: null, sectors: [], connections: [], operations: [], events: [],
+    activeSector: null, sectors: [], connections: [], operations: [], tasks: [], events: [],
     error: message
   };
 }
@@ -52,6 +56,7 @@ function readState() {
       state.status = 'OFFLINE';
       state.telemetryStale = true;
     }
+    if (!Array.isArray(state.tasks)) state.tasks = [];
     return state;
   } catch (error) {
     return offlineState(`State unavailable: ${error.message}`);
@@ -78,6 +83,29 @@ function sendJson(res, status, payload) {
   res.end(body);
 }
 
+function readJsonBody(req, maxBytes = 64 * 1024) {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks = [];
+    req.on('data', chunk => {
+      size += chunk.length;
+      if (size > maxBytes) {
+        reject(new Error('Payload too large'));
+        req.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => {
+      try {
+        const raw = Buffer.concat(chunks).toString('utf8');
+        resolve(raw ? JSON.parse(raw) : {});
+      } catch (error) { reject(error); }
+    });
+    req.on('error', reject);
+  });
+}
+
 function contentType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
   return ({
@@ -87,14 +115,17 @@ function contentType(filePath) {
   })[ext] || 'application/octet-stream';
 }
 
-function serveStatic(res, pathname) {
-  const requested = pathname === '/' ? '/index.html' : pathname;
-  const safePath = path.normalize(requested).replace(/^([.][.][/\\])+/, '');
-  const filePath = path.join(PUBLIC_DIR, safePath);
-  if (!filePath.startsWith(PUBLIC_DIR)) { res.writeHead(403, commonHeaders()); return res.end('Forbidden'); }
+function serveStatic(req, res, pathname) {
+  const requested = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  const filePath = path.resolve(PUBLIC_DIR, requested);
+  if (!filePath.startsWith(path.resolve(PUBLIC_DIR) + path.sep) && filePath !== path.resolve(PUBLIC_DIR, 'index.html')) {
+    res.writeHead(403, commonHeaders());
+    return res.end('Forbidden');
+  }
   fs.readFile(filePath, (err, data) => {
     if (err) { res.writeHead(404, commonHeaders()); return res.end('Not found'); }
     res.writeHead(200, { ...commonHeaders(), 'Content-Type': contentType(filePath), 'Cache-Control': 'no-cache' });
+    if (req.method === 'HEAD') return res.end();
     res.end(data);
   });
 }
@@ -125,35 +156,72 @@ function writeTelemetry(payload) {
   fs.renameSync(tempFile, STATE_FILE);
 }
 
-function receiveTelemetry(req, res) {
+async function receiveTelemetry(req, res) {
   if (!INGEST_TOKEN) return sendJson(res, 404, { error: 'Not found' });
   if (!tokenMatches(req)) return sendJson(res, 401, { error: 'Unauthorized' });
+  try {
+    const payload = await readJsonBody(req, MAX_INGEST_BYTES);
+    if (!validateTelemetry(payload)) return sendJson(res, 400, { error: 'Invalid telemetry payload' });
+    writeTelemetry(payload);
+    const state = readState();
+    broadcast(state);
+    return sendJson(res, 202, { ok: true, receivedAt: new Date().toISOString() });
+  } catch (error) {
+    return sendJson(res, 400, { error: `Invalid telemetry: ${error.message}` });
+  }
+}
 
-  let size = 0;
-  const chunks = [];
-  req.on('data', chunk => {
-    size += chunk.length;
-    if (size > MAX_INGEST_BYTES) {
-      res.writeHead(413, commonHeaders());
-      res.end('Payload too large');
-      req.destroy();
-      return;
-    }
-    chunks.push(chunk);
-  });
-  req.on('end', () => {
-    if (res.writableEnded) return;
-    try {
-      const payload = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-      if (!validateTelemetry(payload)) return sendJson(res, 400, { error: 'Invalid telemetry payload' });
-      writeTelemetry(payload);
-      const state = readState();
-      broadcast(state);
-      return sendJson(res, 202, { ok: true, receivedAt: new Date().toISOString() });
-    } catch (error) {
-      return sendJson(res, 400, { error: `Invalid telemetry: ${error.message}` });
-    }
-  });
+function sameSide(taskCoalition, playerSide) {
+  const side = String(taskCoalition || '').toLowerCase();
+  return side === String(playerSide || '').toLowerCase();
+}
+
+function safeCommandField(value) {
+  return String(value ?? '').replace(/[\t\r\n]/g, ' ').trim();
+}
+
+function queueAcceptCommand(taskId, playerName) {
+  const dir = commandDir();
+  fs.mkdirSync(dir, { recursive: true });
+  const finalPath = path.join(dir, `accept-task-${taskId}.cmd`);
+  if (fs.existsSync(finalPath)) {
+    const error = new Error('Task acceptance already pending');
+    error.code = 'PENDING';
+    throw error;
+  }
+  const requestId = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
+  const tempPath = path.join(dir, `.accept-task-${taskId}-${requestId}.tmp`);
+  const line = `WZCMD1\tACCEPT_TASK\t${Number(taskId)}\t${safeCommandField(playerName)}\t${requestId}\n`;
+  fs.writeFileSync(tempPath, line, { encoding: 'utf8', flag: 'wx' });
+  fs.renameSync(tempPath, finalPath);
+  return requestId;
+}
+
+async function acceptTask(req, res, taskId) {
+  const state = readState();
+  if (state.telemetryStale || state.status === 'OFFLINE') return sendJson(res, 503, { error: 'DCS telemetry is offline' });
+  const task = (state.tasks || []).find(t => Number(t.id) === Number(taskId));
+  if (!task) return sendJson(res, 404, { error: 'Task not found' });
+  if (String(task.status || '').toUpperCase() !== 'AVAILABLE') return sendJson(res, 409, { error: `Task is ${task.status || 'not available'}` });
+
+  let body;
+  try { body = await readJsonBody(req); }
+  catch (error) { return sendJson(res, 400, { error: `Invalid request: ${error.message}` }); }
+
+  const playerName = safeCommandField(body.playerName);
+  if (!playerName || playerName.length > 80) return sendJson(res, 400, { error: 'Select an online DCS pilot' });
+  const player = (state.players || []).find(p => String(p.name || '') === playerName);
+  if (!player) return sendJson(res, 403, { error: 'Pilot is not currently online in DCS' });
+  if (!sameSide(task.coalition, player.side)) return sendJson(res, 403, { error: 'Pilot coalition does not match this task' });
+
+  try {
+    const requestId = queueAcceptCommand(taskId, playerName);
+    return sendJson(res, 202, { ok: true, queued: true, taskId: Number(taskId), playerName, requestId });
+  } catch (error) {
+    if (error.code === 'PENDING') return sendJson(res, 409, { error: error.message });
+    console.error('Task queue error:', error);
+    return sendJson(res, 500, { error: 'Unable to queue DCS command' });
+  }
 }
 
 let lastMtime = 0;
@@ -172,6 +240,10 @@ setInterval(() => {
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   if (url.pathname === '/api/telemetry' && req.method === 'POST') return receiveTelemetry(req, res);
+
+  const acceptMatch = url.pathname.match(/^\/api\/tasks\/(\d+)\/accept$/);
+  if (acceptMatch && req.method === 'POST') return acceptTask(req, res, Number(acceptMatch[1]));
+
   if (url.pathname === '/api/state' && req.method === 'GET') return sendJson(res, 200, readState());
   if (url.pathname === '/api/health' && req.method === 'GET') {
     const state = readState();
@@ -181,9 +253,11 @@ const server = http.createServer((req, res) => {
       telemetry: state.status || 'UNKNOWN',
       telemetryAgeMs: Number.isFinite(state.telemetryAgeMs) ? state.telemetryAgeMs : null,
       ingestEnabled: Boolean(INGEST_TOKEN),
+      commandQueue: commandDir(),
       time: new Date().toISOString()
     };
-    if (process.env.WARZONE_HEALTH_DETAILS === '1') health.stateFile = STATE_FILE;
+    if (process.env.WARZONE_HEALTH_DETAILS !== '1') delete health.commandQueue;
+    else health.stateFile = STATE_FILE;
     return sendJson(res, 200, health);
   }
   if (url.pathname === '/events' && req.method === 'GET') {
@@ -199,11 +273,12 @@ const server = http.createServer((req, res) => {
     return;
   }
   if (req.method !== 'GET' && req.method !== 'HEAD') return sendJson(res, 405, { error: 'Method not allowed' });
-  serveStatic(res, url.pathname);
+  serveStatic(req, res, url.pathname);
 });
 
 server.listen(PORT, HOST, () => {
   console.log(`WarZone Command Center listening on http://${HOST}:${PORT}`);
   console.log(`Reading state from ${STATE_FILE}`);
+  console.log(`DCS command queue: ${commandDir()}`);
   console.log(`Remote telemetry ingest ${INGEST_TOKEN ? 'enabled' : 'disabled'}`);
 });
