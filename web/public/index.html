@@ -71,6 +71,27 @@
       <div id="sectorGrid" class="sector-grid"></div>
     </section>
 
+    <section class="panel mission-tasking">
+      <div class="panel-title">
+        <h2>Mission Tasking</h2>
+        <span>select task → briefing → accept in DCS</span>
+      </div>
+      <div class="task-toolbar">
+        <div class="task-filters" id="taskFilters">
+          <button class="task-filter active" data-filter="ALL">ALL</button>
+          <button class="task-filter" data-filter="CAP">CAP</button>
+          <button class="task-filter" data-filter="SEAD">SEAD</button>
+          <button class="task-filter" data-filter="CAS">CAS</button>
+          <button class="task-filter" data-filter="STRIKE">STRIKE</button>
+        </div>
+        <label class="pilot-picker">DCS PILOT
+          <select id="pilotSelect"><option value="">Select online pilot…</option></select>
+        </label>
+      </div>
+      <div id="taskMessage" class="task-message" aria-live="polite"></div>
+      <div id="taskGrid" class="task-grid"></div>
+    </section>
+
     <section class="grid two lower">
       <article class="panel">
         <div class="panel-title"><h2>Active Operations</h2><span>WarZone GroupCommander</span></div>
@@ -89,12 +110,42 @@
       </article>
       <article class="panel architecture">
         <div class="panel-title"><h2>Telemetry</h2><span>public strategic feed</span></div>
-        <p>Sector ownership, topology, economy, operations and player roster are exported by the DCS mission every two seconds. Tactical enemy coordinates are intentionally excluded.</p>
+        <p>Sector ownership, topology, economy, operations, task status and player roster are exported by the DCS mission every two seconds. Tactical enemy coordinates are intentionally excluded.</p>
       </article>
     </section>
 
     <footer>WARZONE CAUCASUS · DYNAMIC PVE / PVPVE · LIVE COMMAND CENTER</footer>
   </main>
+
+  <dialog id="taskDialog" class="task-dialog">
+    <form method="dialog" class="task-dialog-shell">
+      <div class="task-dialog-head">
+        <div>
+          <span id="briefType" class="brief-type">MISSION</span>
+          <h2 id="briefTitle">Task briefing</h2>
+          <small id="briefMeta">—</small>
+        </div>
+        <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      </div>
+      <div class="brief-grid">
+        <div><span>STATUS</span><strong id="briefStatus">—</strong></div>
+        <div><span>SECTOR</span><strong id="briefSector">—</strong></div>
+        <div><span>REWARD</span><strong id="briefReward">—</strong></div>
+        <div><span>COALITION</span><strong id="briefCoalition">—</strong></div>
+      </div>
+      <section class="brief-block"><h3>Objective</h3><p id="briefObjective">—</p></section>
+      <section class="brief-block"><h3>Briefing</h3><pre id="briefText">—</pre></section>
+      <section class="brief-columns">
+        <div class="brief-block"><h3>Threats</h3><div id="briefThreats" class="chip-list"></div></div>
+        <div class="brief-block"><h3>Recommended Aircraft</h3><div id="briefAircraft" class="chip-list"></div></div>
+      </section>
+      <div class="task-dialog-actions">
+        <small id="briefPilotHint">Select your online DCS pilot before accepting.</small>
+        <button type="button" id="acceptTaskButton" class="accept-task">ACCEPT MISSION</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="/app.js"></script>
 </body>
 </html>
