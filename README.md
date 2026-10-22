@@ -2,6 +2,8 @@
 
 **Version 4.47 · DCS World · Caucasus · Dynamic PvE / PvPvE campaign**
 
+![WarZone Caucasus - V4.43 briefing cover](assets/images/warzone-caucasus-briefing-v4-43-cover.png)
+
 WarZone Caucasus is a persistent multiplayer campaign by **IRON87ITA**, built around progressive sector warfare. The operational front expands as sectors are captured, creating a focused battlefield while avoiding unnecessary AI activity across the entire map.
 
 ## Highlights
