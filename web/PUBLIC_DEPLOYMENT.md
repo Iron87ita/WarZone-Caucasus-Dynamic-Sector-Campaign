@@ -18,7 +18,7 @@ The Node process is intentionally bound to loopback for this deployment. Do not 
 Requirements:
 
 - Node.js 20+
-- The WEB LIVE FIX2 mission running successfully at least once
+- A WarZone `.miz` that actually loads the Lua telemetry bridge and has successfully exported a live state at least once (the published v4.47 `.miz` must **not** be assumed to contain the later web integration)
 - `WarZoneWebState.json` present in the DCS Saved Games folder
 
 Close any manually running `npm start` window first.
@@ -92,11 +92,15 @@ Do not use a temporary `trycloudflare.com` Quick Tunnel for WarZone production. 
 
 Use a normal named tunnel installed as a Windows service.
 
-## 4. Public access
+## 4. Public access and task-control security
 
-If the page must be visible to everyone, do not place a Cloudflare Access login policy in front of the public hostname.
+For a **public read-only dashboard**, the site may be accessible without a Cloudflare Access login. Public telemetry contains strategic campaign data only; exact enemy aircraft, SAM and ground-unit positions are not exported by the bridge.
 
-The WarZone public telemetry deliberately contains strategic campaign data only. Exact enemy aircraft, SAM and ground-unit positions are not exported by the bridge.
+**However, the current Node.js task-acceptance endpoint (`POST /api/tasks/:id/accept`) has no browser-user authentication.** It checks only that the selected DCS pilot is online, that the task is available, and that the player's coalition matches. If published without access restrictions, another visitor could submit a command on behalf of an online pilot.
+
+**Do not expose the task-acceptance POST route to anonymous visitors.** Restrict it using your reverse proxy, access gateway or application authentication. If you want public read-only monitoring, block `POST /api/tasks/*/accept` at the edge while leaving the telemetry GET routes available. This is an operational requirement until application-level authorization is implemented.
+
+The optional `POST /api/telemetry` endpoint is separate and requires `WARZONE_INGEST_TOKEN` to be configured; never publish that token.
 
 ## 5. Firewall / router
 
@@ -121,7 +125,9 @@ Public:
 https://warzone.example.com/api/health
 ```
 
-A healthy response should report the web service and current telemetry state without exposing the local Windows path to `WarZoneWebState.json`.
+The health endpoint reports the web process and the current telemetry status without exposing the local Windows path to `WarZoneWebState.json` by default. **`ok: true` only confirms that Node.js responded**; it does not prove a DCS mission is online.
+
+If the service is using the repository's bundled `web/data/state.json`, it can display **sample** `ONLINE` data without a running DCS server. For public deployment, configure `WARZONE_STATE_FILE` to a real DCS telemetry file and confirm its update timestamps.
 
 ## 7. Logs
 
