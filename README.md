@@ -1,10 +1,10 @@
 # WarZone Caucasus – Dynamic Sector Campaign
 
-**Version 4.47 · DCS World · Caucasus · Dynamic PvE / PvPvE campaign**
+**Latest separately published mission release: v4.47 (2026-09-20) · DCS World · Caucasus · Dynamic PvE / PvPvE**
 
 ![WarZone Caucasus logo](assets/images/WarZoneLogo.png)
 
-WarZone Caucasus is a persistent multiplayer campaign by **IRON87ITA**, built around progressive sector warfare. The operational front expands as sectors are captured, creating a focused battlefield while avoiding unnecessary AI activity across the entire map.
+WarZone Caucasus is a persistent single-player and multiplayer campaign by **IRON87ITA**, built around progressive sector warfare. The operational front expands as sectors are captured, creating a focused battlefield while avoiding unnecessary AI activity across the entire map.
 
 ## Highlights
 
@@ -69,6 +69,12 @@ Purchased units now retain:
 Shop units remain separate from the standard ZoneCommander respawn tables, preserving zone defence, capture, counterattack and garrison behaviour.
 
 Existing compatible save files can continue to be used when upgrading to v4.47.
+
+## Release and source-code status
+
+The latest separately published mission release is [v4.47](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.47). Although the older [v4.45 release](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.45) also lists a file named `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_55.miz`, GitHub reports the **same SHA-256** for that asset and the `V4_45.miz` asset. The v4.55 filename therefore does **not** establish a newer build.
+
+The `main` branch also contains [Web Command Center source code](web/README.md) and post-v4.47 Lua integrations for live telemetry and web-based mission acceptance. These additions must be integrated into a mission separately; their presence in the repository does **not** mean they are included in the downloadable v4.47 `.miz`. See the [changelog](CHANGELOG.md) for the distinction between mission releases and repository-only changes.
 
 ## Installation and update
 
