@@ -1,8 +1,19 @@
 # WarZone Caucasus – Changelog
 
-# WarZone Caucasus v4.47
+## Release status (verified 2026-11-01)
 
-## Persistence & Dynamic Warfare Update
+- **Latest separately published mission release:** [v4.47](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.47), published on 2026-09-20.
+- The [v4.45 release](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.45) contains two differently named mission assets: `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_45.miz` and `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_55.miz`. Their published SHA-256 checksums are **identical** (`3ce30ad14a25d458102efc580ad29fb7e4e01d6828555344aedf9963b9dc7a31`). Thus the v4.55 *filename* is a duplicate of the v4.45 asset, **not a separately verified v4.55 build or release**.
+- Source files committed to `main` after v4.47 (including web telemetry and task-control integration) do **not** automatically update the previously released v4.47 `.miz`. Their availability inside a playable mission must be verified separately.
+
+## Post-v4.47 repository additions (source code; not a new mission release)
+
+- Added a Node.js Web Command Center, Lua telemetry bridge and strategic-sector dashboard.
+- Added Lua task manager, task bindings to the existing player mission board, telemetry task export, and a web-to-DCS command-file queue for accepting tasks.
+- Web integration requires the relevant Lua modules to be included and loaded in the mission, with the required DCS scripting I/O permissions. The standalone web files are not proof that these modules are present in the tagged v4.47 `.miz`.
+- Public deployment requires additional access control for task-acceptance POST endpoints; the Node.js handler validates the selected online pilot and coalition but does not authenticate the browser user.
+
+## v4.47 – Persistence & Dynamic Warfare Update (2026-09-20)
 
 Version **4.47** focuses on improving campaign persistence and the reliability of dynamically deployed forces during long-running multiplayer campaigns.
 
@@ -104,7 +115,7 @@ Thank you to everyone testing the mission and reporting issues.
 
 Your feedback continues to help improve WarZone and make the persistent campaign more reliable with every release.
 
-## HOTFIX V4.46 – AI GROUND COUNTERATTACK & SHOP PERSISTENCE
+## v4.46 – AI Ground Counterattack & Shop Persistence (2026-09-12)
 
 * Fixed AI ground forces failing to continue offensive operations after the first campaign sectors.
 * Reworked ground target selection to use the full sector connection network instead of the old limited progression chain.
@@ -140,23 +151,7 @@ The persistence filename has intentionally not been changed in order to preserve
 
 
 
-## V4.55
-
-Current stable build.
-
-* Includes the extended 14-sector dynamic campaign system.
-* Includes persistence self-healing introduced with the extended campaign.
-* Maintains NATO and RED progressive sector paths.
-* TAF / GCI system remains active.
-* Dynamic AI Commander remains active.
-* Updated campaign systems from previous V4.x releases are included.
-* Current recommended mission file:
-
-`WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_55.miz`
-
----
-
-## V4.45 – Extended Sector Campaign Hotfix
+## v4.45 – Extended Sector Campaign (2026-09-10)
 
 ### Campaign Progression
 
@@ -222,3 +217,5 @@ will automatically unlock **Sector 6** after mission startup.
 Recommended build at the time:
 
 `WarZone Caucasus MODERN V4.45 FINAL`
+
+**Packaging clarification:** An additional file with `V4_55` in its name was attached to the v4.45 release. Its published SHA-256 matches the v4.45 mission file exactly, so the changelog no longer lists v4.55 as a newer stable release.
