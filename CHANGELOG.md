@@ -80,7 +80,7 @@ If no shop-unit persistence information exists in an older save file, WarZone si
 
 ---
 
-## Technical Improvements
+### Technical Improvements
 
 * Added dedicated `shopSpawnedUnits` persistence state
 * Added dynamic ground-group registration
@@ -95,7 +95,7 @@ If no shop-unit persistence information exists in an older save file, WarZone si
 
 ---
 
-## Recommended Server Update Procedure
+### Recommended Server Update Procedure
 
 1. Stop the current WarZone mission.
 2. Replace the previous `.miz` with **WarZone Caucasus v4.47**.
