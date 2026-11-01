@@ -1,6 +1,8 @@
 # WarZone Caucasus Web Command Center
 
-Live strategic dashboard for **WarZone Caucasus Dynamic Sector Campaign v4.47**.
+Companion live strategic dashboard developed against the **WarZone Caucasus Dynamic Sector Campaign v4.47** runtime.
+
+**Release distinction:** The latest separately published mission file is [v4.47](../README.md#release-and-source-code-status). The web dashboard and several task-control Lua adapters were added to the repository **after** that release. Their presence on `main` does not prove that they are embedded in the downloadable v4.47 `.miz`; the mission must load the corresponding modules before these features can work.
 
 The dashboard reads the campaign directly from the real WarZone runtime state and aggregates the live `ZoneCommander` data through the campaign's `WZ_SECTOR` definitions. It exports the 14 strategic sectors, campaign progression, coalition state and active operations while DCS is running.
 
@@ -17,6 +19,7 @@ The dashboard reads the campaign directly from the real WarZone runtime state an
 - Active `GroupCommander` patrol / attack / supply operations
 - Zone / sector progression event feed
 - Operation launch events
+- Mission task definitions, availability, briefing, status and rewards **when the task manager/bridge patch is installed**
 
 The public feed intentionally does **not** export exact enemy aircraft, SAM or ground-unit positions.
 
@@ -33,7 +36,9 @@ Saved Games\<DCS instance>\WarZoneWeb\WarZoneWebState.json
 Node.js web/server.js
   |-- GET /api/state
   |-- GET /api/health
-  `-- GET /events  (Server-Sent Events)
+  |-- GET /events  (Server-Sent Events)
+  |-- POST /api/tasks/:id/accept (optional task command)
+  `-- POST /api/telemetry (optional authenticated ingestion)
   |
   v
 Browser Command Center
@@ -45,9 +50,13 @@ For public 24/7 deployment the recommended production path is:
 DCS -> JSON -> Node on 127.0.0.1:8787 -> Cloudflare Tunnel -> HTTPS Internet
 ```
 
-## 1. Install the Lua bridge in the mission
+## 1. Integrate the Lua bridge and optional task controls into the mission
 
-Load `bridge/WarZoneWebBridge.lua` only after the WarZone campaign runtime has been created (`bc` / `WZ_SECTOR`). The tested WEB LIVE FIX2 mission embeds the bridge in the already-loaded WarZone campaign script so it starts in the correct order.
+Load `bridge/WarZoneWebBridge.lua` **after** the WarZone campaign runtime (`bc` / `WZ_SECTOR`) is initialized. The downloadable v4.47 mission release predates the repository's web-integration commits; do not assume it includes the bridge.
+
+For **read-only telemetry**, the bridge must be embedded and executing correctly inside the running `.miz`.
+
+For **web task acceptance**, the mission additionally needs the Lua task manager (`mission/WarZone_TaskManager.lua`), the task bridge patch (`mission/WarZone_TaskBridgePatch.lua`), the command inbox (`mission/WarZone_WebCommands.lua`) and the player-mission-board bindings (`mission/WarZone_TaskBindings.lua`). The bindings depend on existing WarZone player-mission-board functions and must be loaded after those functions are defined. All of these files exist in this repository; they are not automatically injected into an already published `.miz`.
 
 Successful startup is logged as:
 
@@ -109,6 +118,9 @@ AVVIA_WARZONE_WEB.cmd
 | `WARZONE_STATE_FILE` | auto-detect / demo state | Exact DCS telemetry JSON |
 | `WARZONE_STALE_MS` | `15000` | Mark live DCS telemetry offline after this age |
 | `WARZONE_HEALTH_DETAILS` | `0` | Set to `1` only for local debugging to expose the telemetry file path in `/api/health` |
+| `WARZONE_COMMAND_DIR` | directory named `commands` next to the selected state file | Where the web server queues task-acceptance command files |
+| `WARZONE_INGEST_TOKEN` | unset (ingest disabled) | Bearer token required for optional `POST /api/telemetry` |
+| `WARZONE_MAX_INGEST_BYTES` | `2097152` | Maximum accepted telemetry POST body size in bytes |
 
 ## 3. Install as a Windows 24/7 startup task
 
@@ -136,6 +148,8 @@ Uninstall:
 
 ## 4. Publish it to the Internet
 
+**Security note:** As currently implemented, `POST /api/tasks/:id/accept` checks that the selected pilot is online and belongs to the correct coalition, but **does not authenticate the person using the browser**. Do not expose this write endpoint publicly without a separate authorization layer or route-level restriction. A public read-only dashboard can block task-acceptance POST requests at the reverse proxy.
+
 See **[PUBLIC_DEPLOYMENT.md](PUBLIC_DEPLOYMENT.md)**.
 
 The recommended public deployment is a named **Cloudflare Tunnel** installed as a Windows service and mapped to:
@@ -155,6 +169,24 @@ Do **not** port-forward `8787` and do not expose the DCS Saved Games directory o
 ## Operational map
 
 The bridge aggregates the actual campaign strategic sector definitions in `WZ_SECTOR`. Each sector can contain multiple component zones; the browser uses their geographic centers / geometry to plot the strategic campaign while keeping tactical enemy-unit positions private.
+
+## Web-based mission tasking
+
+When the optional task-control Lua modules are installed, the dashboard can list CAP, CAS, SEAD and STRIKE tasks, display briefings and submit task-acceptance requests for pilots currently online in the corresponding coalition.
+
+Flow:
+
+```text
+Browser -> POST /api/tasks/:id/accept -> Node.js command file
+    -> DCS WZ_WEB_COMMANDS -> WZ_TASKS -> WZ_TASK_BINDINGS
+    -> existing WarZone player mission board
+```
+
+An HTTP `202 Accepted` response indicates the command was **queued**, not that DCS has activated the task. Confirm the resulting task status in the updated telemetry. Without the mission-side command reader and bindings, the web request cannot activate a real mission.
+
+## Demo-data warning
+
+If no live DCS telemetry file is found, the web service may fall back to the committed `web/data/state.json` example. It contains **simulated** players, sectors and an `ONLINE` status for UI demonstration; this is **not evidence of a running DCS server**. For production, set `WARZONE_STATE_FILE` explicitly and check that the JSON file is being updated by DCS.
 
 ## Campaign paths
 
