@@ -2,8 +2,7 @@
 
 ## Release status (updated 2026-11-02)
 
-- **Latest published mission release:** [v4.48 English](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.48), published on 2026-11-02. The previous mission release is v4.47 (2026-09-20).
-- The [v4.45 release](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.45) contains two differently named mission assets: `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_45.miz` and `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_55.miz`. Their published SHA-256 checksums are **identical** (`3ce30ad14a25d458102efc580ad29fb7e4e01d6828555344aedf9963b9dc7a31`). Thus the v4.55 *filename* is a duplicate of the v4.45 asset, **not a separately verified v4.55 build or release**.
+- **Latest published mission release:** [v4.48 English](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.48), published on 2026-11-02. The previous mission release is v4.47 (2026-09-20)
 - Source files committed to `main` after v4.47 (including web telemetry and task-control integration) do **not** automatically update the previously released v4.47 `.miz`. Their availability inside a playable mission must be verified separately.
 
 ## v4.48 – Enhanced AI Activity, F10 Control & Dynamic AI Tasks (2026-11-02)
