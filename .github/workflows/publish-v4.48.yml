@@ -1,0 +1,31 @@
+name: Publish WarZone v4.48
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'releases/v4.48/**'
+      - '.github/workflows/publish-v4.48.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: warzone-release-v4.48
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the release package
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify and publish v4.48
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 releases/v4.48/publish_release.py

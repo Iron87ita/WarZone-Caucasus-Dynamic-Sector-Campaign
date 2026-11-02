@@ -1,12 +1,31 @@
 # WarZone Caucasus – Changelog
 
-## Release status (verified 2026-11-01)
+## Release status (updated 2026-11-02)
 
-- **Latest separately published mission release:** [v4.47](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.47), published on 2026-09-20.
+- **Latest published mission release:** [v4.48 English](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.48), published on 2026-11-02. The previous mission release is v4.47 (2026-09-20).
 - The [v4.45 release](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.45) contains two differently named mission assets: `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_45.miz` and `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_55.miz`. Their published SHA-256 checksums are **identical** (`3ce30ad14a25d458102efc580ad29fb7e4e01d6828555344aedf9963b9dc7a31`). Thus the v4.55 *filename* is a duplicate of the v4.45 asset, **not a separately verified v4.55 build or release**.
 - Source files committed to `main` after v4.47 (including web telemetry and task-control integration) do **not** automatically update the previously released v4.47 `.miz`. Their availability inside a playable mission must be verified separately.
 
-## Post-v4.47 repository additions (source code; not a new mission release)
+## v4.48 – Enhanced AI Activity, F10 Control & Dynamic AI Tasks (2026-11-02)
+
+- Published the English `.miz` built from the supplied V4.47 Iron87Ita base.
+- Added coalition-specific F10 AI tempo settings, reinforcement requests and halt/resume controls for campaign columns.
+- Increased AUTO combat flight/column limits per coalition to 3/2 (1–2 players), 4/3 (3–4), 6/3 (5–6), and 8/4 (7+), plus up to 1 AWACS and 2 tankers.
+- Added balanced CAP/CAS/SEAD capacity, earlier staggered departures and shorter respawn gaps; empty servers suspend new launches.
+- Added player tasks against newly spawned opposing SEAD, CAS, CAP/BARCAP, support, cargo, recon, ground-defense and naval groups.
+- Added exact-group briefings, paginated target lists, exclusive group assignments and assigned-group F10 tracking updated every 30 seconds.
+- Added full-group destruction checks, withdrawal/despawn handling, one-time pending bonuses with assigned-group kill attribution, and disconnect/new-life claim cleanup.
+- Added four ground dispatchers per coalition, continued advances after securing a sector, final off-road route legs, bounded stuck recovery and support for a surviving group after leader loss.
+- Raised AIEN's tactical movement limit to 18 groups and reduced naval raid delays.
+- Translated all new player-facing text and three AIEN diagnostics into English; updated briefing instructions and AI limits.
+- Included an English guide, validation report and SHA-256 checksums.
+- Preserved the supplied V4.47 persistence filename/schema; no migration is introduced. Live task assignments and AI tempo settings are session-specific.
+- Passed DCS Lua compilation, simulated module/campaign API tests, language audit and ZIP integrity checks. No in-simulator flight session has been run.
+- Web telemetry/task-control integrations remain separate repository source and are not embedded in this `.miz`.
+
+See the [complete release notes](docs/releases/v4.48.md), [player guide](docs/AI_CONTROL_AND_TASKS.md), and [validation report](docs/releases/v4.48-validation.txt).
+
+## Web Command Center additions (repository source; separate from mission releases)
 
 - Added a Node.js Web Command Center, Lua telemetry bridge and strategic-sector dashboard.
 - Added Lua task manager, task bindings to the existing player mission board, telemetry task export, and a web-to-DCS command-file queue for accepting tasks.
@@ -219,3 +238,4 @@ Recommended build at the time:
 `WarZone Caucasus MODERN V4.45 FINAL`
 
 **Packaging clarification:** An additional file with `V4_55` in its name was attached to the v4.45 release. Its published SHA-256 matches the v4.45 mission file exactly, so the changelog no longer lists v4.55 as a newer stable release.
+

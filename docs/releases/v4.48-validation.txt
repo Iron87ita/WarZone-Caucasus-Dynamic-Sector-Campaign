@@ -1,0 +1,19 @@
+PASS: all embedded Lua files and mission tables compile with DCS lua.dll
+PASS: archive-wide language audit; remaining keyword matches are English terms
+PASS: English translation preserves all V4.48 Lua gameplay logic
+PASS: English AI task and control menu labels installed for players
+PASS: initial defenses, inactive templates and human groups excluded
+PASS: BLUE SEAD becomes RED mission, acceptance and private tracking
+PASS: full group destruction and exactly one pending RTB bonus
+PASS: support rotation/despawn closes task without success or reward
+PASS: RED ground spawn creates BLUE task; only RED controls its movement
+PASS: destruction by other forces awards no claimant bonus
+PASS: CAS/CAP/AWACS/cargo/recon/naval/SAM role classification
+PASS: large objective catalogs paginate within F10 limits
+PASS: independent coalition settings, pause and empty-server protection
+PASS: disconnect/respawn release old assignments
+ALL MODULE TESTS PASSED
+PASS: actual campaign scaler uses coalition modes, shorter gaps and empty-server gating
+PASS: actual convoy continuation, dead leader, on/off-road route, halt and bounded recovery
+PASS: actual CAP/CAS/SEAD distribution, combat/support caps, paused and empty-server naval
+ALL CAMPAIGN INTEGRATION TESTS PASSED

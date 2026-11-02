@@ -1,0 +1,36 @@
+{
+  "repository": "Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign",
+  "tag": "v4.48",
+  "title": "WarZone Caucasus v4.48 \u2013 Enhanced AI Activity, F10 Control & Dynamic AI Tasks",
+  "assets": [
+    {
+      "name": "WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_48_Iron87Ita_EN.miz",
+      "sha256": "2c50176dece5b61f55ef0faa224b37096ed227553281542ba8317d3fbf0705dc"
+    },
+    {
+      "name": "README_V4_48_EN.txt",
+      "sha256": "7fd6c5ae56d144d7a65725c03be455022bc64d201a67a66c4a74642aac0db769"
+    },
+    {
+      "name": "RELEASE_NOTES_v4.48.md",
+      "sha256": "8f0b9d8df5e704915d78be565c5a7cbe5d9a84184c9e6d2ca78064e66a7ef626"
+    },
+    {
+      "name": "VERIFICATION_V4_48_EN.txt",
+      "sha256": "608020bbc360ea518bbffcfd5e952d97f4af1dc9e0e2a27e40a2f4a849401715"
+    },
+    {
+      "name": "SHA256SUMS_v4.48.txt",
+      "sha256": "cc889f625e1b3e717dbd81d6838415b82c9415aa04f30302e9a1e5c90d8af36f"
+    }
+  ],
+  "files": [
+    "README.md",
+    "CHANGELOG.md",
+    "docs/releases/v4.48.md",
+    "docs/AI_CONTROL_AND_TASKS.md",
+    "docs/releases/v4.48-validation.txt",
+    "docs/releases/v4.48-SHA256SUMS.txt"
+  ],
+  "mission_sha256": "2c50176dece5b61f55ef0faa224b37096ed227553281542ba8317d3fbf0705dc"
+}
