@@ -1,9 +1,27 @@
 # WarZone Caucasus – Changelog
 
-## Release status (updated 2026-11-02)
+## Release status (updated 2026-11-04)
 
-- **Latest published mission release:** [v4.48 English](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.48), published on 2026-11-02. The previous mission release is v4.47 (2026-09-20)
-- Source files committed to `main` after v4.47 (including web telemetry and task-control integration) do **not** automatically update the previously released v4.47 `.miz`. Their availability inside a playable mission must be verified separately.
+- **Latest mission release:** [v4.49 English](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.49). Previous published mission: v4.48.
+- Web Command Center modules on `main` remain separate source integrations; their presence in the repository does not mean they are embedded in a released `.miz`.
+
+## v4.49 – Friendly Escorts, AI Combat & SEAD / Bingo RTB Fixes (2026-11-04)
+
+- Published the author's supplied V4.49 mission while preserving its Mission Editor data, warehouses and other resources; aligned remaining current version/briefing labels to 4.49.
+- Added friendly-flight escort/protection tasks alongside the existing enemy intercept/attack tasking. Friendly escorts and opposing intercepts can coexist on the same live AI group with separate claims, tracks and rewards.
+- Added five-minute / 5 NM airborne escort checks and cargo-delivery escort checks requiring at least 60 seconds nearby, survival and presence at delivery. Bonuses remain pending until safe RTB.
+- Reduced WARZONE MISSIONS to six main entries, separated Friendly AI and Enemy AI, moved coalition controls to Friendly AI > Operations, and added automatically refreshed paginated catalogs.
+- Installed real role-specific mission routes/tasks after combat AI takeoff instead of relying on template routes matching the campaign target metadata. CAP/BARCAP intercept airborne threats; CAS attacks ground formations in the assigned area.
+- Replaced SEAD search/orbit behavior with direct AttackUnit tasking, prioritizing live radar defenses and selecting compatible ARM or guided ground weapons. Added mixed F-16 AGM-88/AGM-65 and Su-34 Kh-31P/Kh-29T loads for dispatched clones.
+- Bounded stalled SEAD attempts, radar-silence fallback and total sortie duration. Cleared objectives, incompatible/exhausted weapons and exhausted attempts order RTB rather than indefinite loitering.
+- Added explicit group bingo monitoring using the lowest fuel among living airborne aircraft: 30% internal fuel, or earlier when measured consumption requires more return reserve.
+- RTB clears attack/orbit orders and selects the nearest currently friendly airport, without departure-base preference. New targets cannot cancel RTB; loss of the landing base triggers diversion. FARPs/carriers are excluded for fixed-wing runway selection.
+- Preserved the author's V4.49 Mission Editor selections, including JF-17 RED CAP templates, and retained the legacy stock-weapon template cleanup.
+- Updated general, NATO and RF briefings in English, plus the player guide, release notes, validation report, version metadata and checksums.
+- Passed archive checks, DCS Lua 5.1 compilation and 49 simulated scenarios against the publication copy. Live weapon employment, taxiing and landing still require in-simulator testing.
+- Preserved persistence filenames/schema and the existing separate web-source integration scope.
+
+See the [complete v4.49 notes](docs/releases/v4.49.md), [player guide](docs/AI_CONTROL_AND_TASKS.md) and [validation report](docs/releases/v4.49-validation.txt).
 
 ## v4.48 – Enhanced AI Activity, F10 Control & Dynamic AI Tasks (2026-11-02)
 
@@ -237,4 +255,5 @@ Recommended build at the time:
 `WarZone Caucasus MODERN V4.45 FINAL`
 
 **Packaging clarification:** An additional file with `V4_55` in its name was attached to the v4.45 release. Its published SHA-256 matches the v4.45 mission file exactly, so the changelog no longer lists v4.55 as a newer stable release.
+
 

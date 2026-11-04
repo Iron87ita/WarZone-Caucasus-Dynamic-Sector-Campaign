@@ -1,0 +1,22 @@
+WARZONE CAUCASUS V4.49 — RELEASE VERIFICATION
+Date: 2026-11-04 (Europe/Rome)
+
+Author-supplied input: WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_49.miz
+Input bytes: 7924059
+Input SHA-256: 597b867bcff24be6a41d34d3d72b6d1a6be1ccd88ea087c690838b5fb74db3d8
+Published copy bytes: 7988369
+Published copy SHA-256: b477889a910921443864d11966b8c06131bdd43ee1134dec824e479f8b63079c
+
+PASS: Input and output ZIP integrity; no duplicate or added/removed entries.
+PASS: Mission Editor mission table and warehouses preserved byte-for-byte.
+PASS: Only the briefing dictionary and activity-module version metadata changed.
+PASS: All 22 embedded Lua scripts/mission tables compile with DCS Lua 5.1.
+PASS: General, NATO and RF briefings contain V4.49 and current task/fuel procedures.
+PASS: 14 activity/escort scenarios against the published copy.
+PASS: 35 combat/SEAD/fuel scenarios against the published copy.
+PASS: Release file checksums and manifest prepared for upload verification.
+
+Simulated scenarios validate task construction and controller decisions. They do
+not reproduce the DCS flight model, sensors, weapon hits, taxiing or landing.
+No in-simulator flight session was performed for this publication.
+The author's source file in Downloads was not modified.

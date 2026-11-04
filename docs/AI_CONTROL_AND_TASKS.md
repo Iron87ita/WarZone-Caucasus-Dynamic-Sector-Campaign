@@ -1,103 +1,61 @@
-# WarZone Caucasus v4.48 – AI Control and Dynamic Tasks
+# WarZone Caucasus v4.49 – AI Control, Escorts and Intercepts
 
-```text
-WARZONE CAUCASUS V4.48 EN
-ENHANCED AI ACTIVITY, F10 CONTROLS AND TASKS AGAINST ENEMY SPAWNS
+Open `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_49.miz` in DCS. Menus, task briefings and notifications are in English.
 
-Open WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_48_Iron87Ita_EN.miz in DCS.
-All mission menus, task briefings, notifications and status messages are in
-English. The mission briefing includes the current V4.48 AI settings.
+## F10 quick start
 
-AI CONTROL
+Open **F10 > WARZONE MISSIONS**:
 
-F10 > WARZONE MISSIONS > AI CONTROL
-- Status / current limits: profile, human player counts and active AI groups.
-- Operations tempo: AUTO, LOW, NORMAL, HIGH, OFFENSIVE or NEW LAUNCHES PAUSED.
-- Request AI reinforcements: CAP, CAS, SEAD, GROUND columns or a NAVAL raid.
-- Halt active columns / Resume column movement.
+| Entry | Purpose |
+| --- | --- |
+| Current task / F10 track | Current AI task, live tracking and active sector tasking |
+| Cancel task | Release the AI task or sector mission separately |
+| Friendly AI | Read a friendly flight briefing and accept an escort |
+| Enemy AI | Read an enemy-group briefing and accept an intercept/attack |
+| Sector missions | Random mission, CAP, BARCAP, CAS, SEAD and STRIKE |
+| Reports / help | Aircraft roster, naval threats and the AI task guide |
 
-Each coalition controls its own AI. Settings are shared by its players and
-reset to AUTO when the mission restarts. Pause suspends new launches while
-active groups continue their missions. Requests and activity changes respect
-base ownership, unlocked sectors, group limits and parking availability.
-An empty server does not launch new groups. Column movement controls apply
-to the campaign's ground dispatcher columns.
+Lists appear directly in Friendly AI and Enemy AI. They refresh every 30 seconds, provide a manual refresh command and use five entries per page.
 
-DYNAMIC AI TASKS
+## Escort tasks
 
-F10 > WARZONE MISSIONS > DYNAMIC AI TASKS
-1. Select Refresh target list.
-2. Open ENEMY GROUP LIST and select a target.
-3. Read Briefing / position, then select Accept task.
-4. Use Active task / F10 track for the current briefing and tracking marker.
-5. Cancel AI task releases the target for another player group.
+For an ordinary friendly flight, accept **Escort** and accumulate five minutes airborne within 5 NM of a protected aircraft. Altitude separation counts. Time outside range or on the ground does not count. Every aircraft alive in the protected group when accepted must survive.
 
-Example: BLUE SENAKI SEAD#001 becomes an INTERCEPT SEAD task for RED.
-A RED SEAD spawn becomes a corresponding task for BLUE.
-Eligible spawns include CAP/BARCAP, CAS, AWACS, tankers, cargo, recon aircraft,
-ground columns, dynamic SAM defenses and ships. Initial groups, inactive
-templates, human groups and CSAR survivors are excluded from new-spawn tasks.
+Cargo escort instead requires confirmed capture, supply or map-marker delivery, at least 60 seconds of nearby airborne escort and presence within range at delivery. Failed or invalid delivery, aircraft loss and withdrawal do not complete the escort.
 
-One task per player group and one assigned group per target. AI tasks can run
-alongside existing territorial missions. Refresh the paginated catalog from
-the menu. Briefings identify the exact group, origin/destination when known,
-coordinates, bearing/range, altitude, speed and surviving unit count.
-The assigned group's F10 tracking marker updates every 30 seconds.
+Each participating pilot must individually accumulate the required escort time for a bonus. The bonus remains pending until safe RTB. A completed escort cannot be repeated on the same AI flight.
 
-Destroy ALL units in the assigned target group. Withdrawal or despawn does
-not count as destruction. A task bonus requires at least one kill credited
-to a player in the assigned group. Bonuses are added to pending earnings and
-redeemed after safe RTB under existing WarZone rules. Other-forces-only kills
-do not award the assigned group a bonus. Disconnecting or starting a new life
-releases the previous assignment.
+## Enemy intercept/attack tasks
 
-ENHANCED ACTIVITY
+Accept a live enemy group and destroy all of its units. Aircraft, convoys, defenses and ships remain eligible. A task bonus requires at least one credited player kill in the assigned group; other-forces-only kills do not award that bonus. Withdrawal, despawn and successful enemy cargo delivery do not count as destruction. Redeem pending credits through safe RTB.
 
-AUTO uses these limits PER COALITION while at least one human is present:
-Total players    Combat flights    Ground columns
-1-2              3                 2
-3-4              4                 3
-5-6              6                 3
-7+               8                 4
-Up to 1 AWACS and 2 tankers per coalition are available in addition.
+There is one AI task per player group. A live AI group can have one friendly escort and one opposing interception assignment at the same time. Claims, map markers and rewards are separate. Disconnecting or starting a new life releases the old task. AI tasks can coexist with sector tasking.
 
-LOW:       2 combat flights / 1 column.
-NORMAL:    4 combat flights / 2 columns.
-HIGH:      6 combat flights / 3 columns.
-OFFENSIVE: 8 combat flights / 4 columns.
-These are upper limits; campaign conditions may permit fewer active groups.
-With at least three combat slots, capacity is shared between CAP, CAS and SEAD.
+## Friendly AI operations
 
-Initial flights are staggered at approximately 1.5-6.5 minutes, with shorter
-subsequent launch gaps. Initial ground columns start after approximately
-4-5 minutes, with additional departures staggered. AUTO solo/duo ground
-respawn delays are 8-12 minutes, compared with the previous 30-40 minutes.
+**Friendly AI > Operations** provides status/current limits, operations tempo, AI reinforcement requests and halt/resume controls for campaign columns. Each coalition controls its own forces. AUTO, LOW, NORMAL, HIGH, OFFENSIVE and NEW LAUNCHES PAUSED remain available. Requests obey ownership, sector access, traffic limits and parking checks. An empty server suspends new launches; pausing does not stop groups already in action.
 
-Four ground dispatchers per coalition are available. After securing a sector,
-a column can advance toward the next objective instead of being removed.
-Road routes include a final off-road leg when required. A stalled column can
-receive a new route after four minutes without progress, with a maximum of
-three recovery attempts per leg. Recovery is suspended while the column is
-halted through F10. Surviving vehicles continue receiving orders after the
-lead vehicle is lost. AIEN permits up to 18 groups moving tactically at once.
-Initial naval raid attempts occur after 8-9 minutes, with shorter cooldowns.
+AUTO limits per coalition:
 
-VERIFICATION
+| Total human players | Combat flights | Ground columns |
+| --- | ---: | ---: |
+| 1–2 | 3 | 2 |
+| 3–4 | 4 | 3 |
+| 5–6 | 6 | 3 |
+| 7+ | 8 | 4 |
 
-All embedded Lua scripts and mission tables compile with DCS lua.dll.
-Simulated DCS API tests cover opposing spawn tasks, assignment, private
-tracking, F10 pagination, partial/full kills, one-time pending bonuses,
-despawn handling, disconnects, coalition controls and activity limits.
-Tests also exercise the actual campaign scaler, air dispatchers, convoy
-continuation, route recovery and paused/empty-server naval launch gates.
-Language checks cover all embedded Lua string literals and briefing text;
-existing reference images were already in English.
+Up to one AWACS and two tankers are available in addition. Zone defenses retain their operational strength. Manual LOW/NORMAL/HIGH/OFFENSIVE limits remain 2/1, 4/2, 6/3 and 8/4 combat flights/columns, subject to campaign conditions.
 
-The English release changes the campaign script, briefing dictionary and
-three AIEN diagnostic messages. Gameplay logic matches V4.48. The archive
-passes ZIP integrity checks. Original input files remain untouched.
+## What the AI does
 
-A flight session has not been run inside DCS. Taxi behavior, actual terrain
-pathfinding and performance still require an in-simulator check.
+CAP and BARCAP patrol/intercept airborne threats. CAS attacks ground formations in its assigned operational area. Combat tasks are installed after takeoff and run automatically, regardless of whether a player accepts an escort/intercept task.
 
-```
+SEAD receives direct attacks against individual defense units, with radar units first. Mixed ARM and guided ground-attack loads permit attacks on emitting radars, silent radars and non-radar defenses. The controller changes target after destruction, uses bounded retries and returns when objectives, compatible weapons or attack attempts are exhausted. It does not rely on an indefinite search orbit.
+
+Combat flights check the lowest fuel among their living airborne aircraft. **Bingo is 30% internal fuel**, or earlier if measured consumption requires a larger return reserve. Bingo overrides attack orders with a landing route to the **nearest currently friendly airport**, without favoring the departure base. RTB stays active despite new targets. If the runway is captured, the flight diverts to another friendly airport.
+
+## Updating and verification
+
+Restart the mission after replacing the `.miz`; running sorties do not receive code changes from a file replacement. Keep a backup of the compatible campaign save. No persistence filename/schema migration is introduced.
+
+The release package passed archive checks, DCS Lua 5.1 compilation and 49 simulated activity/combat scenarios. Live aircraft behavior and landing still require validation inside DCS. See the v4.49 release notes and validation report for the exact verification scope.

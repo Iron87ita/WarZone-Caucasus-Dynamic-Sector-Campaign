@@ -1,0 +1,30 @@
+{
+  "repository": "Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign",
+  "tag": "v4.49",
+  "title": "WarZone Caucasus v4.49 – Friendly Escorts, AI Combat & SEAD / Bingo RTB Fixes",
+  "assets": [
+    {
+      "name": "WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_49.miz",
+      "sha256": "b477889a910921443864d11966b8c06131bdd43ee1134dec824e479f8b63079c"
+    },
+    {
+      "name": "README_V4_49_EN.txt",
+      "sha256": "414cebce6c0b6062cdf6e346895a82271b70ca5cf2db86ac397f13177a8c580f"
+    },
+    {
+      "name": "RELEASE_NOTES_v4.49.md",
+      "sha256": "6dbfc71de8448edc86e436fa5581d7c9466cffacd33e7577cea913177fa1c408"
+    },
+    {
+      "name": "VERIFICATION_V4_49_EN.txt",
+      "sha256": "371e476d46d4f1d6c0b28cb7d5e7f6a0c6766ef08355386809770831435803c9"
+    },
+    {
+      "name": "SHA256SUMS_v4.49.txt",
+      "sha256": "34710708b7c2ee2a26bf44421c7f5f775b9d3f70a167c3c36bcf312e20eca7f6"
+    }
+  ],
+  "mission_sha256": "b477889a910921443864d11966b8c06131bdd43ee1134dec824e479f8b63079c",
+  "input_mission_sha256": "597b867bcff24be6a41d34d3d72b6d1a6be1ccd88ea087c690838b5fb74db3d8",
+  "version": "4.49"
+}
