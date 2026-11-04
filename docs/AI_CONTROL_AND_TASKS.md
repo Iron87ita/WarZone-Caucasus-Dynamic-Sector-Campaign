@@ -2,6 +2,18 @@
 
 Open `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_49.miz` in DCS. Menus, task briefings and notifications are in English.
 
+## CAP / supply hotfix — replacement build (2026-11-04)
+
+This replaces the previous v4.49 download under the same mission filename and release URL.
+
+- Prioritize CAP dispatchers at friendly airfields near the assigned front, preventing distant western bases from consuming every shared CAP slot before northern bases are processed.
+- Add a short retry delay when compatible parking is unavailable.
+- Set the intended coalition and country explicitly for spawned combat and cargo aircraft.
+- Validate cargo destination ownership before launch, before routing and throughout the flight. Supply aircraft serve friendly active, unlocked zones; capture aircraft serve eligible adjacent neutral zones.
+- Cancel cargo flights if their destination becomes ineligible or their actual coalition differs from the requested coalition. Cargo origins must also be friendly in DCS.
+
+The corrected CAP_SUPPLY_FIX mission is copied byte-for-byte to the standard v4.49 download filename. Only essential syntax, cargo-coalition guard and archive-integrity checks were performed for this hotfix; the previous 49-scenario suite was not rerun.
+
 ## F10 quick start
 
 Open **F10 > WARZONE MISSIONS**:
@@ -58,4 +70,4 @@ Combat flights check the lowest fuel among their living airborne aircraft. **Bin
 
 Restart the mission after replacing the `.miz`; running sorties do not receive code changes from a file replacement. Keep a backup of the compatible campaign save. No persistence filename/schema migration is introduced.
 
-The release package passed archive checks, DCS Lua 5.1 compilation and 49 simulated activity/combat scenarios. Live aircraft behavior and landing still require validation inside DCS. See the v4.49 release notes and validation report for the exact verification scope.
+The original release base passed DCS Lua 5.1 compilation and 49 simulated scenarios. This targeted CAP/supply replacement received only essential syntax, cargo-coalition guard and archive checks; the full suite was not rerun. Live aircraft behavior and landing still require validation inside DCS. See the v4.49 release notes and validation report for the exact verification scope.

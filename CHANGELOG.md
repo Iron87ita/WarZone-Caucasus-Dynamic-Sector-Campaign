@@ -5,6 +5,18 @@
 - **Latest mission release:** [v4.49 English](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.49). Previous published mission: v4.48.
 - Web Command Center modules on `main` remain separate source integrations; their presence in the repository does not mean they are embedded in a released `.miz`.
 
+## CAP / supply hotfix — replacement build (2026-11-04)
+
+This replaces the previous v4.49 download under the same mission filename and release URL.
+
+- Prioritize CAP dispatchers at friendly airfields near the assigned front, preventing distant western bases from consuming every shared CAP slot before northern bases are processed.
+- Add a short retry delay when compatible parking is unavailable.
+- Set the intended coalition and country explicitly for spawned combat and cargo aircraft.
+- Validate cargo destination ownership before launch, before routing and throughout the flight. Supply aircraft serve friendly active, unlocked zones; capture aircraft serve eligible adjacent neutral zones.
+- Cancel cargo flights if their destination becomes ineligible or their actual coalition differs from the requested coalition. Cargo origins must also be friendly in DCS.
+
+The corrected CAP_SUPPLY_FIX mission is copied byte-for-byte to the standard v4.49 download filename. Only essential syntax, cargo-coalition guard and archive-integrity checks were performed for this hotfix; the previous 49-scenario suite was not rerun.
+
 ## v4.49 – Friendly Escorts, AI Combat & SEAD / Bingo RTB Fixes (2026-11-04)
 
 - Published the author's supplied V4.49 mission while preserving its Mission Editor data, warehouses and other resources; aligned remaining current version/briefing labels to 4.49.

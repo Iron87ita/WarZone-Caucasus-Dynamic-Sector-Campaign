@@ -6,6 +6,18 @@
 
 WarZone Caucasus is a persistent single-player and multiplayer campaign by **IRON87ITA**, built around progressive sector warfare. The operational front expands as sectors are captured, creating a focused battlefield while avoiding unnecessary AI activity across the entire map.
 
+## CAP / supply hotfix — replacement build (2026-11-04)
+
+This replaces the previous v4.49 download under the same mission filename and release URL.
+
+- Prioritize CAP dispatchers at friendly airfields near the assigned front, preventing distant western bases from consuming every shared CAP slot before northern bases are processed.
+- Add a short retry delay when compatible parking is unavailable.
+- Set the intended coalition and country explicitly for spawned combat and cargo aircraft.
+- Validate cargo destination ownership before launch, before routing and throughout the flight. Supply aircraft serve friendly active, unlocked zones; capture aircraft serve eligible adjacent neutral zones.
+- Cancel cargo flights if their destination becomes ineligible or their actual coalition differs from the requested coalition. Cargo origins must also be friendly in DCS.
+
+The corrected CAP_SUPPLY_FIX mission is copied byte-for-byte to the standard v4.49 download filename. Only essential syntax, cargo-coalition guard and archive-integrity checks were performed for this hotfix; the previous 49-scenario suite was not rerun.
+
 ## Highlights
 
 - Fourteen strategic sectors
@@ -89,7 +101,7 @@ The current downloadable mission is [v4.49 English](https://github.com/Iron87ita
 
 The `main` branch also contains [Web Command Center source code](web/README.md) and Lua integrations for telemetry and web-based mission acceptance. These remain **separate source integrations and are not embedded in the v4.49 `.miz`**.
 
-The published copy passes ZIP integrity checks, DCS Lua 5.1 compilation and **49 simulated activity/combat scenarios**. These checks do not establish live weapon hits, taxi behavior, landing or server performance; those require an in-simulator session. The supplied mission table, warehouses and other resources are preserved; only briefing/version metadata is aligned before publication.
+The original v4.49 base passed DCS Lua 5.1 compilation and 49 simulated activity/combat scenarios. The current CAP/supply hotfix received only essential syntax, cargo-coalition guard and ZIP-integrity checks; the full suite was not rerun. Live behavior still requires an in-simulator session. The corrected mission is published byte-for-byte under the standard v4.49 filename.
 
 Historical packaging note: the older v4.45 release includes a `V4_55.miz` filename whose published SHA-256 matches the v4.45 asset. That filename does not establish a newer build.
 

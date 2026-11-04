@@ -5,26 +5,37 @@
   "assets": [
     {
       "name": "WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_49.miz",
-      "sha256": "b477889a910921443864d11966b8c06131bdd43ee1134dec824e479f8b63079c"
+      "sha256": "c87a6321ef66070cdb4c5d44fa3ffd211b9bbe86b124dc97270fd1c87b1eda65"
     },
     {
       "name": "README_V4_49_EN.txt",
-      "sha256": "414cebce6c0b6062cdf6e346895a82271b70ca5cf2db86ac397f13177a8c580f"
+      "sha256": "df712b9ab1d4ba8ffe3a6e17d0436d455e2113703932b6ef4360c437667a6253"
     },
     {
       "name": "RELEASE_NOTES_v4.49.md",
-      "sha256": "6dbfc71de8448edc86e436fa5581d7c9466cffacd33e7577cea913177fa1c408"
+      "sha256": "23b15b9913978bac590df189b85363ec953c09d60a770f4cd8c7364326929140"
     },
     {
       "name": "VERIFICATION_V4_49_EN.txt",
-      "sha256": "371e476d46d4f1d6c0b28cb7d5e7f6a0c6766ef08355386809770831435803c9"
+      "sha256": "967aa7349810ef8ce4b5f61dc105cfa1187ef428b01d0ba0f1f4e18f83d01903"
     },
     {
       "name": "SHA256SUMS_v4.49.txt",
-      "sha256": "34710708b7c2ee2a26bf44421c7f5f775b9d3f70a167c3c36bcf312e20eca7f6"
+      "sha256": "45f455395dab96f6769eb38cd33c3d0ad610d976985b599212e9ac59106ab84d"
     }
   ],
-  "mission_sha256": "b477889a910921443864d11966b8c06131bdd43ee1134dec824e479f8b63079c",
-  "input_mission_sha256": "597b867bcff24be6a41d34d3d72b6d1a6be1ccd88ea087c690838b5fb74db3d8",
-  "version": "4.49"
+  "mission_sha256": "c87a6321ef66070cdb4c5d44fa3ffd211b9bbe86b124dc97270fd1c87b1eda65",
+  "input_mission_sha256": "c87a6321ef66070cdb4c5d44fa3ffd211b9bbe86b124dc97270fd1c87b1eda65",
+  "version": "4.49",
+  "revision": "CAP/supply hotfix",
+  "replacement": {
+    "release_id": 434117143,
+    "expected_assets": {
+      "README_V4_49_EN.txt": "sha256:414cebce6c0b6062cdf6e346895a82271b70ca5cf2db86ac397f13177a8c580f",
+      "RELEASE_NOTES_v4.49.md": "sha256:6dbfc71de8448edc86e436fa5581d7c9466cffacd33e7577cea913177fa1c408",
+      "SHA256SUMS_v4.49.txt": "sha256:34710708b7c2ee2a26bf44421c7f5f775b9d3f70a167c3c36bcf312e20eca7f6",
+      "VERIFICATION_V4_49_EN.txt": "sha256:371e476d46d4f1d6c0b28cb7d5e7f6a0c6766ef08355386809770831435803c9",
+      "WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_49.miz": "sha256:b477889a910921443864d11966b8c06131bdd43ee1134dec824e479f8b63079c"
+    }
+  }
 }

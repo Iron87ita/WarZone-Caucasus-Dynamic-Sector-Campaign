@@ -42,7 +42,8 @@ def publish():
             headers['Content-Type']=content_type
         req=urllib.request.Request(url,data=body,method=method,headers=headers)
         with urllib.request.urlopen(req,timeout=120) as response:
-            return json.load(response)
+            raw=response.read()
+            return json.loads(raw) if raw else None
 
     try:
         release=request(API+'/releases/tags/'+manifest['tag'])
@@ -57,20 +58,49 @@ def publish():
         print('Created draft release:',release['id'])
 
     release_url=API+'/releases/'+str(release['id'])
+    replacement=manifest.get('replacement')
+    if replacement:
+        assert release['id']==replacement['release_id'], 'Release identity changed; refusing replacement.'
     existing={asset['name']:asset for asset in request(release_url+'/assets?per_page=100')}
     expected={asset['name'] for asset in manifest['assets']}
-    assert set(existing).issubset(expected), 'Unexpected assets on existing release; refusing to modify it.'
+    staged_names={a['name']+'.replacement-'+a['sha256'][:12] for a in manifest['assets']}
+    assert set(existing).issubset(expected|staged_names), 'Unexpected assets on existing release; refusing to modify it.'
+    staged={}
+    # Upload and verify all replacements before touching any published asset.
     for asset in manifest['assets']:
         name=asset['name']
         uploaded=existing.get(name)
-        if uploaded is None:
-            assert release['draft'], 'Published release missing an asset; refusing to alter it.'
-            url=release['upload_url'].split('{',1)[0]+'?'+urllib.parse.urlencode({'name':name})
+        if uploaded and uploaded.get('digest')=='sha256:'+asset['sha256']:
+            continue
+        if not release['draft']:
+            assert replacement, 'Published release replacement was not explicitly authorized.'
+            if uploaded:
+                assert uploaded.get('digest')==replacement['expected_assets'].get(name), 'Published asset changed concurrently: '+name
+        stage_name=name+'.replacement-'+asset['sha256'][:12]
+        ready=existing.get(stage_name)
+        if ready is None:
+            url=release['upload_url'].split('{',1)[0]+'?'+urllib.parse.urlencode({'name':stage_name})
             content_type='application/octet-stream' if name.endswith('.miz') else 'text/plain; charset=utf-8'
-            uploaded=request(url,method='POST',data=(ROOT/name).read_bytes(),content_type=content_type)
-        assert uploaded['state']=='uploaded', 'Upload incomplete: '+name
-        assert uploaded.get('digest')=='sha256:'+asset['sha256'], 'GitHub asset digest mismatch: '+name
-        print('Verified uploaded asset:',name,uploaded['size'],'bytes')
+            ready=request(url,method='POST',data=(ROOT/name).read_bytes(),content_type=content_type)
+        assert ready['state']=='uploaded', 'Upload incomplete: '+name
+        assert ready.get('digest')=='sha256:'+asset['sha256'], 'Staged asset digest mismatch: '+name
+        staged[name]=ready
+        print('Verified staged asset:',name,ready['size'],'bytes')
+
+    for name,ready in staged.items():
+        current={a['name']:a for a in request(release_url+'/assets?per_page=100')}.get(name)
+        if current:
+            assert replacement and current.get('digest')==replacement['expected_assets'].get(name), 'Replacement lease changed: '+name
+            request(API+'/releases/assets/'+str(current['id']),method='DELETE')
+        renamed=request(API+'/releases/assets/'+str(ready['id']),method='PATCH',data={'name':name})
+        assert renamed['name']==name and renamed['state']=='uploaded'
+        print('Installed verified replacement:',name)
+
+    release=request(release_url,method='PATCH',data={
+        'name':manifest['title'],
+        'body':(ROOT/'RELEASE_NOTES_v4.49.md').read_text(encoding='utf-8')+
+            '\nRevision source: https://github.com/'+REPOSITORY+'/commit/'+os.environ['GITHUB_SHA']+'\n',
+        'make_latest':'true'})
 
     if release['draft']:
         release=request(release_url,method='PATCH',data={'draft':False,'prerelease':False,'make_latest':'true'})

@@ -2,11 +2,23 @@
 
 Released on 2026-11-04. Created by IRON87ITA.
 
+## CAP / supply hotfix — replacement build (2026-11-04)
+
+This replaces the previous v4.49 download under the same mission filename and release URL.
+
+- Prioritize CAP dispatchers at friendly airfields near the assigned front, preventing distant western bases from consuming every shared CAP slot before northern bases are processed.
+- Add a short retry delay when compatible parking is unavailable.
+- Set the intended coalition and country explicitly for spawned combat and cargo aircraft.
+- Validate cargo destination ownership before launch, before routing and throughout the flight. Supply aircraft serve friendly active, unlocked zones; capture aircraft serve eligible adjacent neutral zones.
+- Cancel cargo flights if their destination becomes ineligible or their actual coalition differs from the requested coalition. Cargo origins must also be friendly in DCS.
+
+The corrected CAP_SUPPLY_FIX mission is copied byte-for-byte to the standard v4.49 download filename. Only essential syntax, cargo-coalition guard and archive-integrity checks were performed for this hotfix; the previous 49-scenario suite was not rerun.
+
 ## Download and install
 
 Download **WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_49.miz** from this release, stop the current mission/server, load the new mission and restart. Back up the campaign persistence file and retain the compatible save. No save-format migration is introduced by these changes.
 
-This release uses the author's supplied V4.49 mission. Its Mission Editor changes, mission table, warehouses and other assets are preserved; only the briefing/version labels and activity-module version metadata are aligned to 4.49 before publication.
+This release uses the author's supplied V4.49 mission with the CAP/supply hotfix. The corrected mission is published unchanged under the standard release filename.
 
 ## Friendly escorts and enemy interception
 
@@ -55,20 +67,12 @@ AI status, operations tempo, reinforcement requests and column controls are unde
 
 ## Briefings, compatibility and scope
 
-The general, NATO and RF briefings describe the updated tasks and fuel procedures in English. Version labels now identify **V4.49**. Existing persistence filenames and schemas are retained. AI task claims and tempo settings remain session-specific.
+The general, NATO and RF briefings describe the updated tasks and fuel procedures in English. The release remains **v4.49**. Existing persistence filenames and schemas are retained. AI task claims and tempo settings remain session-specific.
 
 Web Command Center files on `main` remain separate source integrations; this release does not add those modules to the playable mission.
 
 ## Validation
 
-- ZIP integrity and archive-entry checks passed.
-- 22 embedded Lua scripts/mission tables compile with DCS Lua 5.1.
-- **49 simulated scenarios passed against this release copy:** 14 activity/escort tests and 35 combat/SEAD/fuel tests.
-- The supplied mission table, warehouses and other resources are preserved. Only version/briefing metadata differs from the author's input.
-- SHA-256 checksums are supplied for the downloadable package.
+The original v4.49 base passed 49 simulated scenarios and compilation of its embedded Lua resources. Those broader checks were not rerun for this targeted hotfix. This revision passed the essential campaign syntax, cargo coalition-guard and ZIP-integrity checks. The downloadable mission matches the selected CAP_SUPPLY_FIX artifact byte-for-byte. Live behavior still requires validation inside DCS.
 
-These checks verify code and decisions with simulated DCS APIs. Live weapon employment, taxiing, landing and server performance still require an in-simulator session; automated checks are not proof of live combat success.
-
-Mission SHA-256: `b477889a910921443864d11966b8c06131bdd43ee1134dec824e479f8b63079c`.
-
-See the [player guide](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/blob/main/docs/AI_CONTROL_AND_TASKS.md) and [changelog](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/blob/main/CHANGELOG.md).
+Current mission SHA-256: `c87a6321ef66070cdb4c5d44fa3ffd211b9bbe86b124dc97270fd1c87b1eda65`.
