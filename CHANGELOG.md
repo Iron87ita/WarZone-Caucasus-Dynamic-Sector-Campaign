@@ -1,9 +1,18 @@
 # WarZone Caucasus – Changelog
 
-## Release status (updated 2026-11-04)
+## Release status (updated 2026-11-11)
 
-- **Latest mission release:** [v4.49 English](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.49). Previous published mission: v4.48.
+- **Latest mission release:** [v4.50](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.50). Previous published mission: v4.49.
 - Web Command Center modules on `main` remain separate source integrations; their presence in the repository does not mean they are embedded in a released `.miz`.
+
+## v4.50 – Central Air Corridor & Airlift Update (2026-11-11)
+
+- **450 kt airlift.** Supply, Capture and F10 map-marker cargo flights for NATO and RF now use the same 450 kt speed at spawn and on the delivery route.
+- **Central Air Corridor patrols.** Automatic CAP and BARCAP flights from both coalitions fly to the corridor and patrol it. The dispatcher assigns direct intercepts against airborne opposing AI within 30 NM while both aircraft are inside the corridor. Fighters return to patrol when the engagement ends.
+- **Fixed fighter bingo at 30%.** The lowest-fuel aircraft in a flight triggers group RTB and clears any attack order. The flight heads to the nearest friendly runway and diverts if that runway changes hands.
+- **Updated formations.** NATO CAP uses two-ship F-16C flights. RF uses two-ship J-11A flights in the west and two-ship MiG-29S flights in the east. NATO SEAD now uses the F/A-18C Hornet with AGM-88 HARMs.
+
+See the [v4.50 release notes](docs/releases/v4.50.md).
 
 ## CAP / supply hotfix — replacement build (2026-11-04)
 
