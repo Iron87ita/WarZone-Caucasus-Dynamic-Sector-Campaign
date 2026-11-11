@@ -3,6 +3,8 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+from time import sleep
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -58,10 +60,23 @@ def publish():
         release = request(release_url, "PATCH", {"draft": False, "prerelease": False, "make_latest": "true"})
     latest = request(API + "/releases/latest")
     assert latest["id"] == release["id"] and not latest["draft"]
-    download = Request(asset["browser_download_url"], headers={"User-Agent": USER_AGENT})
-    with urlopen(download, timeout=120) as response:
-        assert sha256(response.read()).hexdigest() == DIGEST, "Public asset checksum mismatch"
-    print("Verified public mission download:", asset["browser_download_url"])
+    # Use the published asset URL. Upload responses can still use the draft tag.
+    public_asset = next(item for item in latest["assets"] if item["name"] == NAME)
+    download_url = public_asset["browser_download_url"]
+    download = Request(download_url, headers={"User-Agent": USER_AGENT})
+    for retry_delay in (2, 5, 10, 20, None):
+        try:
+            with urlopen(download, timeout=30) as response:
+                assert sha256(response.read()).hexdigest() == DIGEST, "Public asset checksum mismatch"
+            break
+        except HTTPError as error:
+            if retry_delay is None or error.code not in {404, 429, 500, 502, 503, 504}:
+                raise
+        except (URLError, TimeoutError):
+            if retry_delay is None:
+                raise
+        sleep(retry_delay)
+    print("Verified public mission download:", download_url)
 
 
 if __name__ == "__main__":
