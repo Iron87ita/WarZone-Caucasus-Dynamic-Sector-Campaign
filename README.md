@@ -1,19 +1,19 @@
 # WarZone Caucasus – Dynamic Sector Campaign
 
-**Latest mission release: [v4.50](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.50) (2026-11-11) · DCS World · Caucasus · Dynamic PvE / PvPvE**
+**Latest mission release: [v4.51](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.51) (2026-11-18) · DCS World · Caucasus · Dynamic PvE / PvPvE**
 
 ![WarZone Caucasus logo](assets/images/WarZoneLogo.png)
 
 WarZone Caucasus is a persistent single-player and multiplayer campaign by **IRON87ITA**, built around progressive sector warfare. The operational front expands as sectors are captured, creating a focused battlefield while avoiding unnecessary AI activity across the entire map.
 
-## What’s new in v4.50
+## What’s new in v4.51
 
-- **450 kt airlift.** Supply, Capture and F10 map-marker cargo flights for NATO and RF now use the same 450 kt speed at spawn and on the delivery route.
-- **Central Air Corridor patrols.** Automatic CAP and BARCAP flights from both coalitions fly to the corridor and patrol it. The dispatcher assigns direct intercepts against airborne opposing AI within 30 NM while both aircraft are inside the corridor. Fighters return to patrol when the engagement ends.
-- **Fixed fighter bingo at 30%.** The lowest-fuel aircraft in a flight triggers group RTB and clears any attack order. The flight heads to the nearest friendly runway and diverts if that runway changes hands.
-- **Updated formations.** NATO CAP uses two-ship F-16C flights. RF uses two-ship J-11A flights in the west and two-ship MiG-29S flights in the east. NATO SEAD now uses the F/A-18C Hornet with AGM-88 HARMs.
+- Two-aircraft reactive CAP responds to player and AI tasking and detected attacks from the nearest eligible friendly airfield.
+- Revised BARCAP airspace, NATO carrier placement, RF air tasking templates and support tracks. A hot-start BLUE Su-27 client slot is available at Sukhumi.
+- F10 commands are grouped by flight and coalition. Eligible kills and completed player tasks include 10 additional personal credits.
+- The 25-page kneeboard is free of version labels. The general, NATO and RF briefings describe the current mission.
 
-See the [v4.50 release notes](docs/releases/v4.50.md) for loadout details and validation.
+See the [v4.51 release notes](docs/releases/v4.51.md) for the aircraft changes, payouts and download checksum.
 
 ## Highlights
 
@@ -68,11 +68,11 @@ Players can launch or support multiple mission types through the campaign system
 
 Enemy air and ground dispatcher activity scale with the total number of active players. In AUTO, the dispatcher allows up to 3 combat flights and 2 columns per coalition for solo/duo play, increasing to 8 combat flights and 4 columns at 7+ players. Up to 1 AWACS and 2 tankers are available in addition. Zone defenses retain their intended operational strength.
 
-Open **F10 > WARZONE MISSIONS** for six entries: Current task / F10 track, Cancel task, Friendly AI, Enemy AI, Sector missions and Reports / help. Coalition tempo, reinforcement and column controls are under **Friendly AI > Operations**.
+Open **F10 Other → 01 WarZone | Flight → 01 Missions** for sector missions, friendly AI escorts, enemy AI intercepts, the current task, cancellation and the AI task guide. Check reactive CAP status under **02 WarZone | Coalition → 02 Intelligence**. The coalition tempo and column controls are under **Missions → Friendly AI → Operations**.
 
 Choose **Friendly AI** to protect a live friendly flight, or **Enemy AI** to intercept/attack an opposing group. Standard escort requires five minutes airborne within 5 NM; cargo escort requires confirmed delivery and at least 60 seconds nearby. Assigned-group tracks and catalogs update every 30 seconds. Personal bonuses require safe RTB.
 
-Combat AI receives role tasking after takeoff. SEAD prioritizes radars and chooses weapons from its available loadout. CAP and BARCAP patrol the Central Air Corridor and return to the **nearest friendly airport** at **30% internal fuel**. CAS and SEAD can return earlier if measured fuel burn calls for a larger reserve.
+Combat AI receives role tasking after takeoff. Regular CAP covers its assigned friendly sector, BARCAP patrols the Central Air Corridor, and reactive CAP investigates an alert. Combat flights return at 30% internal fuel or earlier if measured burn requires more reserve. A flight whose recovery runway changes hands can divert to another friendly airfield.
 
 See the [English AI control and task guide](docs/AI_CONTROL_AND_TASKS.md).
 
@@ -90,21 +90,21 @@ Purchased units now retain:
 
 Shop units remain separate from the standard ZoneCommander respawn tables, preserving zone defence, capture, counterattack and garrison behaviour.
 
-Version 4.50 retains the campaign persistence filename and save schema. No save migration is introduced; back up an existing save before upgrading. AI tempo selections and live AI task assignments apply to the current mission session.
+Version 4.51 retains the campaign persistence filename and save schema. No save migration is introduced; back up an existing save before upgrading. AI tempo selections and live AI task assignments apply to the current mission session.
 
 ## Release and source-code status
 
-The current downloadable mission is [v4.50](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.50). See the [changelog](CHANGELOG.md) for earlier releases.
+The current downloadable mission is [v4.51](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.51). See the [changelog](CHANGELOG.md) for earlier releases.
 
-The `main` branch also contains [Web Command Center source code](web/README.md) and Lua integrations for telemetry and web-based mission acceptance. These remain **separate source integrations and are not embedded in the v4.50 `.miz`**.
+The `main` branch also contains [Web Command Center source code](web/README.md) and Lua integrations for telemetry and web-based mission acceptance. These remain **separate source integrations and are not embedded in the v4.51 `.miz`**.
 
-The supplied v4.50 mission is published byte-for-byte. Archive integrity, Lua 5.1 syntax and 60 scripted checks passed. Live weapon employment has yet to be verified in DCS.
+The release notes list the archive, kneeboard, briefing and simulated Lua checks performed on the published package. In-simulator flight testing is pending.
 
 Historical packaging note: the older v4.45 release includes a `V4_55.miz` filename whose published SHA-256 matches the v4.45 asset. That filename does not establish a newer build.
 
 ## Installation and update
 
-1. Download `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_50.miz` from the [latest GitHub release](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/latest).
+1. Download `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_51.miz` from the [latest GitHub release](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/latest).
 2. Stop the current WarZone mission or dedicated server.
 3. Replace the previous mission with the new `.miz` file.
 4. Back up and keep the existing compatible persistence file.

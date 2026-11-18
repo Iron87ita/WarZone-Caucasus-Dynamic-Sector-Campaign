@@ -1,8 +1,8 @@
-# WarZone Caucasus v4.49 – AI Control, Escorts and Intercepts
+# WarZone Caucasus – AI Control, Escorts and Intercepts
 
-Open `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_49.miz` in DCS. Menus, task briefings and notifications are in English.
+Open `WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_51.miz` in DCS. Menus, task briefings and notifications are in English.
 
-## CAP / supply hotfix — replacement build (2026-11-04)
+## Historical v4.49 CAP / supply hotfix (2026-11-04)
 
 This replaces the previous v4.49 download under the same mission filename and release URL.
 
@@ -16,7 +16,7 @@ The corrected CAP_SUPPLY_FIX mission is copied byte-for-byte to the standard v4.
 
 ## F10 quick start
 
-Open **F10 > WARZONE MISSIONS**:
+Open **F10 Other → 01 WarZone | Flight → 01 Missions**.
 
 | Entry | Purpose |
 | --- | --- |
@@ -25,7 +25,9 @@ Open **F10 > WARZONE MISSIONS**:
 | Friendly AI | Read a friendly flight briefing and accept an escort |
 | Enemy AI | Read an enemy-group briefing and accept an intercept/attack |
 | Sector missions | Random mission, CAP, BARCAP, CAS, SEAD and STRIKE |
-| Reports / help | Aircraft roster, naval threats and the AI task guide |
+| AI task guide | Escort and intercept requirements |
+
+The aircraft roster is under **02 WarZone | Coalition → 03 Air Support**. Naval threats and reactive CAP status are under **02 Intelligence**.
 
 Lists appear directly in Friendly AI and Enemy AI. They refresh every 30 seconds, provide a manual refresh command and use five entries per page.
 
@@ -60,7 +62,7 @@ Up to one AWACS and two tankers are available in addition. Zone defenses retain 
 
 ## What the AI does
 
-CAP and BARCAP patrol/intercept airborne threats. CAS attacks ground formations in its assigned operational area. Combat tasks are installed after takeoff and run automatically, regardless of whether a player accepts an escort/intercept task.
+Regular CAP covers a friendly sector. BARCAP patrols the Central Air Corridor. A separate reactive two-ship may deploy when player or AI activity alerts a defended area. CAS attacks ground formations in its assigned operational area. Combat tasks are installed after takeoff and run automatically, regardless of whether a player accepts an escort/intercept task.
 
 SEAD receives direct attacks against individual defense units, with radar units first. Mixed ARM and guided ground-attack loads permit attacks on emitting radars, silent radars and non-radar defenses. The controller changes target after destruction, uses bounded retries and returns when objectives, compatible weapons or attack attempts are exhausted. It does not rely on an indefinite search orbit.
 
@@ -70,4 +72,4 @@ Combat flights check the lowest fuel among their living airborne aircraft. **Bin
 
 Restart the mission after replacing the `.miz`; running sorties do not receive code changes from a file replacement. Keep a backup of the compatible campaign save. No persistence filename/schema migration is introduced.
 
-The original release base passed DCS Lua 5.1 compilation and 49 simulated scenarios. This targeted CAP/supply replacement received only essential syntax, cargo-coalition guard and archive checks; the full suite was not rerun. Live aircraft behavior and landing still require validation inside DCS. See the v4.49 release notes and validation report for the exact verification scope.
+The [v4.51 release notes](releases/v4.51.md) list the checks performed on the current mission and the limits of simulator validation.

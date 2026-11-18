@@ -1,9 +1,18 @@
 # WarZone Caucasus – Changelog
 
-## Release status (updated 2026-11-11)
+## Release status (updated 2026-11-18)
 
-- **Latest mission release:** [v4.50](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.50). Previous published mission: v4.49.
+- **Latest mission release:** [v4.51](https://github.com/Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign/releases/tag/v4.51). Previous published mission: v4.50.
 - Web Command Center modules on `main` remain separate source integrations; their presence in the repository does not mean they are embedded in a released `.miz`.
+
+## v4.51 – Reactive CAP and Campaign Briefing (2026-11-18)
+
+- Two-aircraft reactive CAP responds to player and AI tasking and detected attacks from the nearest eligible friendly airfield.
+- Revised BARCAP airspace, NATO carrier placement, RF air tasking templates and support tracks. A hot-start BLUE Su-27 client slot is available at Sukhumi.
+- F10 commands are grouped by flight and coalition. Eligible kills and completed player tasks include 10 additional personal credits.
+- The 25-page kneeboard is free of version labels. The general, NATO and RF briefings describe the current mission.
+
+See the [v4.51 release notes](docs/releases/v4.51.md).
 
 ## v4.50 – Central Air Corridor & Airlift Update (2026-11-11)
 

@@ -1,0 +1,83 @@
+"""Publish and verify the v4.51 mission with the GitHub Actions job token."""
+from hashlib import sha256
+import json
+import os
+from pathlib import Path
+from time import sleep
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+
+ROOT = Path(__file__).resolve().parent
+REPO = "Iron87ita/WarZone-Caucasus-Dynamic-Sector-Campaign"
+API = "https://api.github.com/repos/" + REPO
+TAG = "v4.51"
+TITLE = "WarZone Caucasus v4.51 – Reactive CAP and Campaign Briefing"
+NAME = "WarZone_IRON87_CAUCASO_DYNAMIC_SECTOR_MODERN_V4_51.miz"
+DIGEST = "7baad5b2908a5ead519807c585d79629246e1d48bd881d2969f182f0c25dec48"
+USER_AGENT = "WarZone-v4.51-Release-Publisher"
+
+
+def request(url, method="GET", payload=None, content_type="application/json"):
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": "Bearer " + os.environ["GITHUB_TOKEN"],
+        "User-Agent": USER_AGENT,
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    if payload is not None:
+        headers["Content-Type"] = content_type
+    data = json.dumps(payload).encode() if isinstance(payload, dict) else payload
+    with urlopen(Request(url, data=data, headers=headers, method=method), timeout=120) as response:
+        return json.load(response)
+
+
+def publish():
+    assert os.environ["GITHUB_REPOSITORY"] == REPO
+    assert os.environ["GITHUB_REF"] == "refs/heads/main"
+    mission = (ROOT / NAME).read_bytes()
+    assert sha256(mission).hexdigest() == DIGEST, "Mission checksum mismatch"
+    notes = (ROOT.parents[1] / "docs/releases/v4.51.md").read_text(encoding="utf-8")
+    release = next((item for item in request(API + "/releases?per_page=100")
+                    if item["tag_name"] == TAG), None)
+    if release is None:
+        release = request(API + "/releases", "POST", {
+            "tag_name": TAG, "name": TITLE, "body": notes,
+            "target_commitish": os.environ["GITHUB_SHA"],
+            "draft": True, "prerelease": False,
+        })
+    assert release["name"] == TITLE and release["body"] == notes, "Unexpected existing release"
+    release_url = API + "/releases/" + str(release["id"])
+    assets = request(release_url + "/assets?per_page=100")
+    if not assets:
+        assert release["draft"], "Release was published without its mission asset"
+        upload = release["upload_url"].split("{", 1)[0] + "?" + urlencode({"name": NAME})
+        assets = [request(upload, "POST", mission, "application/octet-stream")]
+    assert len(assets) == 1 and assets[0]["name"] == NAME, "Unexpected release assets"
+    asset = assets[0]
+    assert asset["state"] == "uploaded" and asset["digest"] == "sha256:" + DIGEST
+    if release["draft"]:
+        release = request(release_url, "PATCH", {"draft": False, "prerelease": False, "make_latest": "true"})
+    latest = request(API + "/releases/latest")
+    assert latest["id"] == release["id"] and not latest["draft"]
+    # Use the published asset URL. Upload responses can still use the draft tag.
+    public_asset = next(item for item in latest["assets"] if item["name"] == NAME)
+    download_url = public_asset["browser_download_url"]
+    download = Request(download_url, headers={"User-Agent": USER_AGENT})
+    for retry_delay in (2, 5, 10, 20, None):
+        try:
+            with urlopen(download, timeout=30) as response:
+                assert sha256(response.read()).hexdigest() == DIGEST, "Public asset checksum mismatch"
+            break
+        except HTTPError as error:
+            if retry_delay is None or error.code not in {404, 429, 500, 502, 503, 504}:
+                raise
+        except (URLError, TimeoutError):
+            if retry_delay is None:
+                raise
+        sleep(retry_delay)
+    print("Verified public mission download:", download_url)
+
+
+if __name__ == "__main__":
+    publish()
